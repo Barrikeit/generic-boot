@@ -13,9 +13,9 @@
         <app.version>0.0.1</app.version>
         <java.version>17</java.version>
 
-        <spring.version>6.1.12</spring.version>
-        <spring-data.version>3.3.3</spring-data.version>
-        <spring-security.version>6.3.3</spring-security.version>
+        <spring.version>6.2.0</spring.version>
+        <spring-data.version>3.4.0</spring-data.version>
+        <spring-security.version>6.4.1</spring-security.version>
         <spring-boot.version>3.4.0</spring-boot.version>
         <jakarta-servlet.version>6.1.0</jakarta-servlet.version>
         <lombok.version>1.18.34</lombok.version>

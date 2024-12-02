@@ -1,0 +1,22 @@
+application:
+  name: generic
+  version: 0.0.1
+  module: users
+
+server:
+  port: 9991
+  contextPath: /generic
+  apiPath: /api/*
+  timeZone: Europe/Madrid
+  servlet:
+    encoding:
+      force-response: true
+
+spring:
+  profiles:
+    active: @spring.profiles.active@
+  config:
+    import:
+      - application-base.yaml
+      - optional:application-datasource.yaml
+      - application-@spring.profiles.active@.yaml

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="%style{%date{yyyy-MM-dd HH:mm:ss}}{blue}  %highlight{%-5level}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green, DEBUG=blue} --- [%thread{20}] %style{%-43logger}{cyan} - %message%n"
+                    disableAnsi="false"/>
+        </Console>
+        <File name="File" fileName="dist/logs/generic.log">
+            <PatternLayout
+                    pattern="%style{%date{yyyy-MM-dd HH:mm:ss}}{blue}  %highlight{%-5level}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green, DEBUG=blue} --- [%thread{20}] %style{%-43logger}{cyan} - %message%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+        <Logger name="org.barrikeit" level="DEBUG" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <!-- Other loggers -->
+        <Logger name="org.springframework" level="ERROR"/>
+        <Logger name="org.hibernate" level="ERROR"/>
+        <Logger name="com.zaxxer.hikari" level="ERROR"/>
+    </Loggers>
+</Configuration>
