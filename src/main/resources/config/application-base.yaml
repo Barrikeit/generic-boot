@@ -1,22 +1,18 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/generic
-    username: generic
-    password: "generic"
     driverClassName: org.postgresql.Driver
     hikari:
+      pool-name: Hikari
+      auto-commit: false
       minimum-idle: 5
       maximum-pool-size: 10
-      idle-timeout: 600000
-      max-lifetime: 1800000
-      connection-timeout: 30000
-      pool-name: Hikari
       datasource-properties:
         includeSynonyms: false
   jpa:
     database: POSTGRESQL
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    generate-ddl: true
+    generate-ddl: false
     open-in-view: false
     properties:
       hibernate:

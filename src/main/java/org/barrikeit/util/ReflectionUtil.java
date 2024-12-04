@@ -30,7 +30,8 @@ public class ReflectionUtil extends ReflectionUtils {
    * Crea una nueva instancia de una clase utilizando su constructor sin argumentos.
    *
    * @param clazz La clase de la cual se desea crear una nueva instancia.
-   * @return Una nueva instancia de la clase especificada o `null` si ocurre un error al crearla.
+   * @return Una nueva instancia de la clase especificada o `null` si ocurre un error al crearla
+   *     (por ejemplo, si no tiene un constructor sin argumentos o si este no es accesible).
    */
   public static Object newInstance(Class<?> clazz) {
     try {
@@ -48,8 +49,10 @@ public class ReflectionUtil extends ReflectionUtils {
    *
    * @param instance La instancia de la cual se desea obtener el valor del campo.
    * @param fieldName El nombre del campo cuyo valor se desea obtener.
-   * @return El valor del campo especificado o `null` si no se puede acceder al método getter.
-   * @throws FieldValueException Si ocurre un error al intentar acceder al valor del campo.
+   * @return El valor del campo especificado o `null` si no se encuentra el método getter o si el
+   *     campo es inaccesible.
+   * @throws FieldValueException Si ocurre un error al intentar invocar el getter o al acceder al
+   *     valor.
    */
   public static Object getFieldValue(final Object instance, String fieldName) {
     Object value = null;
@@ -71,7 +74,8 @@ public class ReflectionUtil extends ReflectionUtils {
    * @param instance La instancia en la cual se desea establecer el valor del campo.
    * @param fieldName El nombre del campo al cual se le asignará el valor.
    * @param value El valor a establecer en el campo.
-   * @throws FieldValueException Si ocurre un error al intentar establecer el valor del campo.
+   * @throws FieldValueException Si ocurre un error al intentar invocar el setter o al asignar el
+   *     valor.
    */
   public static void setFieldValue(final Object instance, String fieldName, Object value) {
     try {
@@ -86,11 +90,13 @@ public class ReflectionUtil extends ReflectionUtils {
   }
 
   /**
-   * Obtiene la clase del tipo genérico parametrizado en el índice especificado.
+   * Obtiene la clase del tipo genérico parametrizado en el índice especificado de una clase
+   * genérica.
    *
    * @param clazz Clase de la cual se extraerá el tipo parametrizado.
    * @param index Índice del parámetro genérico dentro de la clase.
    * @return La clase correspondiente al tipo genérico parametrizado.
+   * @throws ClassCastException Si no se puede convertir el tipo genérico al tipo esperado.
    */
   public static <E> Class<E> getParameterizedTypeClass(Class<E> clazz, int index) {
     ParameterizedType parameterizedType = (ParameterizedType) clazz.getGenericSuperclass();
@@ -116,30 +122,6 @@ public class ReflectionUtil extends ReflectionUtils {
   }
 
   /**
-   * Obtiene los campos anotados con una anotación específica desde una instancia de clase,
-   * incluyendo campos anidados.
-   *
-   * @param clazz Clase de la cual se extraen los campos anidados.
-   * @param fieldName Nombre del campo padre, usado en recursividad para construir nombres completos
-   *     en formato "padre.hijo".
-   * @return Un `Map` que asocia el nombre completo de cada campo anotado con su valor. Los nombres
-   *     reflejan la estructura anidada como "campo1.campo2".
-   */
-  public static Map<String, Field> getNestedFields(Class<?> clazz, String fieldName) {
-    Map<String, Field> fields = new HashMap<>();
-    for (Field field : getFields(clazz)) {
-      String fullFieldName = buildFullFieldName(fieldName, field.getName());
-      if (GenericEntity.class.isAssignableFrom(field.getDeclaringClass())
-          || GenericDto.class.isAssignableFrom(field.getDeclaringClass())) {
-        fields.putAll(getNestedFields(field.getDeclaringClass(), fullFieldName));
-      } else {
-        fields.put(fullFieldName, field);
-      }
-    }
-    return fields;
-  }
-
-  /**
    * Obtiene todos los campos de una clase, incluyendo los campos de sus superclases, que estén
    * anotados con una anotación específica.
    *
@@ -148,7 +130,7 @@ public class ReflectionUtil extends ReflectionUtils {
    * @return Una lista con todos los campos anotados de la clase y sus superclases.
    * @throws NotFoundException Si no se encuentra ningún campo con la anotación especificada.
    */
-  public static List<Field> getAnnotatedFields(
+  public static List<Field> getFieldsWithAnnotation(
       Class<?> clazz, Class<? extends Annotation> annotation) {
     List<Field> annotatedFields =
         getFields(clazz).stream().filter(field -> field.isAnnotationPresent(annotation)).toList();
@@ -158,42 +140,82 @@ public class ReflectionUtil extends ReflectionUtils {
   }
 
   /**
-   * Obtiene todos los campos de una clase, incluyendo los campos de sus superclases, que estén
-   * anotados con una anotación específica.
+   * Obtiene los campos anidados de una clase, reflejando la estructura jerárquica en los nombres.
    *
-   * @param clazz Clase de la cual se extraen los campos anidados que esten anotados.
-   * @param annotation La clase de la anotación que se busca en los campos.
-   * @param fieldName Nombre del campo padre, usado en recursividad para construir nombres completos
+   * @param clazz Clase de la cual se extraen los campos anidados.
+   * @param fieldName Nombre del campo padre, usado recursivamente para construir nombres completos
    *     en formato "padre.hijo".
-   * @return Un `Map` que asocia el nombre completo de cada campo anotado con su valor. Los nombres
-   *     reflejan la estructura anidada como "campo1.campo2".
+   * @return Un `Map` que asocia el nombre completo de cada campo con el objeto `Field`. Los nombres
+   *     reflejan la estructura jerárquica como "campo1.campo2".
+   */
+  public static Map<String, Field> getNestedFields(Class<?> clazz, String fieldName) {
+    return getFields(clazz).stream()
+        .flatMap(
+            field -> {
+              String fullFieldName = buildFullFieldName(fieldName, field.getName());
+              if (GenericEntity.class.isAssignableFrom(field.getDeclaringClass())
+                  || GenericDto.class.isAssignableFrom(field.getDeclaringClass())) {
+                return getNestedFields(field.getType(), fullFieldName).entrySet().stream();
+              } else {
+                return Stream.of(Map.entry(fullFieldName, field));
+              }
+            })
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
+
+  /**
+   * Obtiene todos los campos de una clase, incluyendo los de sus superclases, que estén anotados
+   * con una anotación específica y devuelve un mapa con el nombre del campo y el objeto `Field`.
+   *
+   * @param clazz Clase de la cual se extraen los campos anotados.
+   * @param annotation La clase de la anotación que se busca en los campos.
+   * @return Un `Map` donde las claves son los nombres de los campos y los valores son los objetos
+   *     `Field`.
+   * @throws NotFoundException Si no se encuentra ningún campo con la anotación especificada.
+   */
+  public static Map<String, Field> getAnnotatedFields(
+      Class<?> clazz, Class<? extends Annotation> annotation) {
+    return getFieldsWithAnnotation(clazz, annotation).stream()
+        .map(field -> Map.entry(field.getName(), field))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
+
+  /**
+   * Obtiene todos los campos anidados de una clase que estén anotados con una anotación específica.
+   * Los nombres de los campos reflejan la estructura jerárquica en formato "padre.hijo".
+   *
+   * @param clazz Clase de la cual se extraen los campos anotados.
+   * @param annotation La clase de la anotación que se busca en los campos.
+   * @param fieldName Nombre del campo padre, usado recursivamente para construir nombres completos.
+   * @return Un `Map` que asocia el nombre completo de cada campo anotado con el objeto `Field`.
    * @throws NotFoundException Si no se encuentra ningún campo con la anotación especificada.
    */
   public static Map<String, Field> getAnnotatedNestedFields(
       Class<?> clazz, Class<? extends Annotation> annotation, String fieldName) {
-    Map<String, Field> annotatedFields =
-        getFields(clazz).stream()
-            .filter(field -> field.isAnnotationPresent(annotation))
-            .flatMap(
-                field -> {
-                  String fullFieldName = buildFullFieldName(fieldName, field.getName());
-                  if (GenericEntity.class.isAssignableFrom(field.getDeclaringClass())
-                      || GenericDto.class.isAssignableFrom(field.getDeclaringClass())) {
-                    return getAnnotatedNestedFields(
-                        field.getDeclaringClass(), annotation, fullFieldName)
-                        .entrySet()
-                        .stream();
-                  } else {
-                    return Stream.of(Map.entry(fullFieldName, field));
-                  }
-                })
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-    if (annotatedFields.isEmpty())
-      throw new NotFoundException(ExceptionConstants.ERROR_MISSING_ANNOTATION, annotation, clazz);
-    return annotatedFields;
+    return getFieldsWithAnnotation(clazz, annotation).stream()
+        .flatMap(
+            field -> {
+              String fullFieldName = buildFullFieldName(fieldName, field.getName());
+              if (GenericEntity.class.isAssignableFrom(field.getDeclaringClass())
+                  || GenericDto.class.isAssignableFrom(field.getDeclaringClass())) {
+                return getAnnotatedNestedFields(
+                    field.getDeclaringClass(), annotation, fullFieldName)
+                    .entrySet()
+                    .stream();
+              } else {
+                return Stream.of(Map.entry(fullFieldName, field));
+              }
+            })
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
+  /**
+   * Obtiene los valores de una lista de campos de una instancia.
+   *
+   * @param instance La instancia de la cual se obtendrán los valores de los campos.
+   * @param fields Lista de campos cuyos valores se desean obtener.
+   * @return Una lista con los valores de los campos especificados.
+   */
   public static List<Object> getListFieldValues(Object instance, List<Field> fields) {
     List<Object> values = new ArrayList<>();
     for (Field field : fields) {
@@ -202,6 +224,14 @@ public class ReflectionUtil extends ReflectionUtils {
     return values;
   }
 
+  /**
+   * Obtiene los valores de un conjunto de campos de una instancia, organizados en un mapa.
+   *
+   * @param instance La instancia de la cual se obtendrán los valores de los campos.
+   * @param fields Un mapa donde las claves son los nombres de los campos y los valores son los
+   *     objetos `Field`.
+   * @return Un `Map` que asocia cada nombre de campo con su valor correspondiente.
+   */
   public static Map<String, Object> getMapFieldValues(Object instance, Map<String, Field> fields) {
     Map<String, Object> values = new HashMap<>();
     for (Map.Entry<String, Field> entry : fields.entrySet()) {
@@ -214,6 +244,15 @@ public class ReflectionUtil extends ReflectionUtils {
     return (parent == null) ? child : parent + "." + child;
   }
 
+  /**
+   * Convierte un valor al tipo especificado, realizando las transformaciones necesarias.
+   *
+   * @param value El valor a convertir.
+   * @param targetType La clase del tipo al cual se desea convertir el valor.
+   * @param <M> El tipo genérico al cual se realiza la conversión.
+   * @return El valor convertido al tipo especificado, o `null` si el valor original es `null`.
+   * @throws UnExpectedException Si ocurre un error en la conversión o si el tipo no es soportado.
+   */
   @SuppressWarnings("unchecked")
   private <M> M castFieldToType(Object value, Class<M> targetType) {
     try {

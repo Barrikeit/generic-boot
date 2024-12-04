@@ -5,14 +5,19 @@ application:
 
 server:
   port: 9991
-  contextPath: /generic
+  context-path: /generic
   apiPath: /api/*
   timeZone: Europe/Madrid
   servlet:
     encoding:
       force-response: true
+      charset: UTF-8
+      enabled: true
+      force: true
 
 spring:
+  application.name: generic
+  mvc.servlet.path: /api/v1
   profiles:
     active: @spring.profiles.active@
   config:

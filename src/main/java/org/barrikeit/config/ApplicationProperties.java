@@ -29,7 +29,6 @@ public class ApplicationProperties {
 
   @Getter
   @Setter
-  @Component
   @ConfigurationProperties(prefix = "application", ignoreUnknownFields = false)
   public static class GenericProperties {
     private String name;
@@ -39,7 +38,6 @@ public class ApplicationProperties {
 
   @Getter
   @Setter
-  @Component
   @ConfigurationProperties(prefix = "server", ignoreUnknownFields = false)
   public static class ServerProperties {
     private int port;
@@ -51,7 +49,6 @@ public class ApplicationProperties {
 
   @Getter
   @Setter
-  @Component
   @ConfigurationProperties(prefix = "spring", ignoreUnknownFields = false)
   public static class DatabaseProperties {
     private String url;
