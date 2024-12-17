@@ -12,7 +12,6 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 @EnableConfigurationProperties({
   ApplicationProperties.GenericProperties.class,
   ApplicationProperties.ServerProperties.class,
-  ApplicationProperties.DatabaseProperties.class
 })
 public class Main extends SpringBootServletInitializer {
   public static void main(String[] args) {
