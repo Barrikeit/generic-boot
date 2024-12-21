@@ -42,26 +42,32 @@ public class ApplicationProperties {
     private String timeZone;
     private String activeProfile;
     private ServletProperties servlet;
+
+    @Getter
+    @Setter
+    public static class ServletProperties {
+      private String contextPath;
+      private String apiPath;
+      private EncodingProperties encoding;
+
+      @Getter
+      @Setter
+      public static class EncodingProperties {
+        private String charset;
+        private boolean enabled;
+        private boolean force;
+        private boolean forceResponse;
+      }
+    }
   }
 
   @Getter
   @Setter
-  public static class ServletProperties {
-    private String contextPath;
-    private String apiPath;
-    private EncodingProperties encoding;
-  }
-
-  @Getter
-  @Setter
-  public static class EncodingProperties {
-    private String charset;
-    private boolean enabled;
-    private boolean force;
-    private boolean forceResponse;
-  }
-
-  @Getter
-  @Setter
+  //  @ConfigurationProperties(prefix = "spring.datasource", ignoreUnknownFields = false)
   public static class DatabaseProperties {}
+
+  @Getter
+  @Setter
+  //  @ConfigurationProperties(prefix = "mail", ignoreUnknownFields = false)
+  public static class MailProperties {}
 }

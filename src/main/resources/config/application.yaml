@@ -8,7 +8,7 @@ server:
   timeZone: Europe/Madrid
   servlet:
     context-path: /generic
-    apiPath: /api/v1/*
+    apiPath: /api/v1
     encoding:
       charset: UTF-8
       enabled: true
@@ -24,4 +24,6 @@ spring:
     import:
       - application-base.yaml
       - optional:application-datasource.yaml
+      - application-security.yaml
+      - application-flyway.yaml
       - application-@spring.profiles.active@.yaml

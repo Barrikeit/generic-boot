@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @param <D> the DTO type that extends {@link GenericDto}.
  */
 @Log4j2
+@Validated
 @AllArgsConstructor
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public abstract class GenericController<

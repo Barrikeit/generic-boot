@@ -1,11 +1,11 @@
 package org.barrikeit.model.domain;
 
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import java.io.Serial;
+import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,8 +29,33 @@ public class User extends GenericEntity {
   @Column(name = "username", length = 50, nullable = false, unique = true)
   private String username;
 
+  @Column(name = "password")
+  private String password;
+
   @Column(name = "email", length = 50)
   private String email;
+
+  @Column(name = "enabled", nullable = false)
+  private boolean enabled = false;
+
+  @Column(name = "banned", nullable = false)
+  private boolean banned = false;
+
+  @Column(name = "ban_date", columnDefinition = "TIMESTAMP WITH TIME ZONE")
+  private LocalDateTime banDate;
+
+  @Column(name = "login_date", columnDefinition = "TIMESTAMP WITH TIME ZONE")
+  private LocalDateTime loginDate;
+
+  @Column(name = "login_attempts")
+  private Integer loginAttempts;
+
+  @ManyToMany
+  @JoinTable(
+      name = "user_roles",
+      joinColumns = @JoinColumn(name = "id_user"),
+      inverseJoinColumns = @JoinColumn(name = "id_role"))
+  private Set<Role> roles = new LinkedHashSet<>();
 
   @Override
   public boolean equals(Object o) {

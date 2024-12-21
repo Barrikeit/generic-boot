@@ -23,8 +23,7 @@ spring:
         show_sql: true
         default_schema: generic
         hbm2ddl:
-          auto: update #validate | create-only | drop | update | create-drop | none
-          import_files: db/insert.sql
+          auto: none #validate | create-only | drop | update | create-drop | none
         generate_statistics: false
         enable_lazy_load_no_trans: true
   session:

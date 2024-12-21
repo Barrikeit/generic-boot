@@ -8,11 +8,10 @@ import java.util.Date;
 import org.barrikeit.util.constants.UtilConstants;
 import org.barrikeit.util.exceptions.UnExpectedException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TimeUtil {
-  private TimeUtil() {
-    throw new IllegalStateException("TimeUtil class");
-  }
 
   private static String zone;
 
