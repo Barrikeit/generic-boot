@@ -27,13 +27,13 @@ import org.barrikeit.util.constants.EntityConstants;
     name = EntityConstants.CODE,
     column =
         @Column(name = EntityConstants.CODE_MODULE, length = 3, nullable = false, unique = true))
-public class Module extends GenericCodeEntity<String> implements Serializable {
+public class Module extends GenericCodeEntity<Integer, String> {
   @Serial private static final long serialVersionUID = 1L;
 
   @Size(max = 200)
   @NotNull
   @Column(name = "module", nullable = false, length = 200)
-  private String module;
+  private String name;
 
   @Override
   public boolean equals(Object o) {
@@ -41,7 +41,7 @@ public class Module extends GenericCodeEntity<String> implements Serializable {
     if (!(o instanceof Module e)) return false;
     if (!super.equals(o)) return false;
 
-    return Objects.equals(module, e.module);
+    return Objects.equals(code, e.code) && Objects.equals(name, e.name);
   }
 
   @Override

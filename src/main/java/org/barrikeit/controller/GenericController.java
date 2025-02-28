@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @AllArgsConstructor
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public abstract class GenericController<
-    E extends GenericEntity, S extends Serializable, D extends GenericDto> {
+    E extends GenericEntity<S>, S extends Serializable, D extends GenericDto> {
 
   private final GenericService<E, S, D> service;
 

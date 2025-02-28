@@ -17,15 +17,17 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @MappedSuperclass
-public abstract class GenericCodeEntity<S extends Serializable> extends GenericEntity {
+public abstract class GenericCodeEntity<I extends Serializable, C extends Serializable>
+    extends GenericEntity<I> {
   @Serial private static final long serialVersionUID = 1L;
 
-  @NotNull protected S code;
+  @NotNull protected C code;
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof GenericCodeEntity<? extends Serializable> that)) return false;
+    if (!(o instanceof GenericCodeEntity<? extends Serializable, ? extends Serializable> that))
+      return false;
     if (!super.equals(o)) return false;
 
     return Objects.equals(code, that.code);

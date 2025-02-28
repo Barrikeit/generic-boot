@@ -28,13 +28,13 @@ import org.barrikeit.util.constants.EntityConstants;
 @AttributeOverride(
     name = EntityConstants.CODE,
     column = @Column(name = EntityConstants.CODE_ROLE, length = 2, nullable = false, unique = true))
-public class Role extends GenericCodeEntity<String> implements Serializable {
+public class Role extends GenericCodeEntity<Integer, String> {
   @Serial private static final long serialVersionUID = 1L;
 
   @NotNull
   @Size(max = 50)
   @Column(name = "role", length = 50, nullable = false)
-  private String role;
+  private String name;
 
   @ManyToMany
   @JoinTable(
@@ -49,7 +49,7 @@ public class Role extends GenericCodeEntity<String> implements Serializable {
     if (!(o instanceof Role e)) return false;
     if (!super.equals(o)) return false;
 
-    return Objects.equals(code, e.code) && Objects.equals(role, e.role);
+    return Objects.equals(code, e.code) && Objects.equals(name, e.name);
   }
 
   @Override

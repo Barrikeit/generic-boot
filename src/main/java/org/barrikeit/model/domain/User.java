@@ -23,16 +23,16 @@ import org.barrikeit.util.constants.EntityConstants;
 @AttributeOverride(
     name = EntityConstants.ID,
     column = @Column(name = EntityConstants.ID_USER, nullable = false))
-public class User extends GenericEntity {
+public class User extends GenericEntity<Long> {
   @Serial private static final long serialVersionUID = 1L;
 
   @Column(name = "username", length = 50, nullable = false, unique = true)
   private String username;
 
-  @Column(name = "password")
+  @Column(name = "password", nullable = false)
   private String password;
 
-  @Column(name = "email", length = 50)
+  @Column(name = "email", length = 50, nullable = false, unique = true)
   private String email;
 
   @Column(name = "enabled", nullable = false)
