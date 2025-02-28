@@ -101,12 +101,11 @@ public class ReflectionUtil extends ReflectionUtils {
    * @return La clase correspondiente al tipo genérico parametrizado.
    * @throws ClassCastException Si no se puede convertir el tipo genérico al tipo esperado.
    */
+  @SuppressWarnings("unchecked")
   public static <E> Class<E> getParameterizedTypeClass(Class<E> clazz, int index) {
     ParameterizedType parameterizedType = (ParameterizedType) clazz.getGenericSuperclass();
     Type[] typeArguments = parameterizedType.getActualTypeArguments();
-    @SuppressWarnings("unchecked")
-    Class<E> tClass = (Class<E>) typeArguments[index];
-    return tClass;
+    return (Class<E>) typeArguments[index];
   }
 
   /**
