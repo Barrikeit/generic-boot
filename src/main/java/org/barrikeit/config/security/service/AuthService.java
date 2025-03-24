@@ -142,7 +142,7 @@ public class AuthService<S extends Session> {
       authentication = authRepository.authenticate(token);
 
       if (authentication == null) {
-        throw new NotFoundException(ExceptionConstants.NOT_FOUND, username);
+        throw new NotFoundException(ExceptionConstants.ERROR_NOT_FOUND, username);
       }
 
       jwt = jwtProvider.generateToken((BasicUserDetails) authentication.getPrincipal(), sessionId);

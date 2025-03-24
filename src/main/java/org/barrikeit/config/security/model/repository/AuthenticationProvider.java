@@ -43,7 +43,7 @@ public class AuthenticationProvider implements AuthRepository {
     if (loadedUser == null
         || !this.passwordEncoder.matches(presentedPassword, loadedUser.getPassword())) {
       log.info("Usuario {} no encontrado", username);
-      throw new NotFoundException(ExceptionConstants.NOT_FOUND, username);
+      throw new NotFoundException(ExceptionConstants.ERROR_NOT_FOUND, username);
     }
     return loadedUser;
   }

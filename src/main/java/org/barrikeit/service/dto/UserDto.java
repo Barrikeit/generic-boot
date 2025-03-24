@@ -8,11 +8,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import lombok.*;
 import org.barrikeit.util.validation.Alphanumeric;
 import org.barrikeit.util.validation.ValidPassword;
 
@@ -20,7 +16,7 @@ import org.barrikeit.util.validation.ValidPassword;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder(toBuilder = true)
+@Builder(toBuilder = true)
 public class UserDto extends GenericDto {
 
   private Long id;

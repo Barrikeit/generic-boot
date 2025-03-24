@@ -27,7 +27,7 @@ public class BasicUserDetailsService {
   public User findByUsername(final String username) throws NotFoundException {
     Optional<User> user = repository.findByUsernameEqualsIgnoreCase(username);
     if (user.isEmpty()) {
-      throw new NotFoundException(ExceptionConstants.NOT_FOUND, username);
+      throw new NotFoundException(ExceptionConstants.ERROR_NOT_FOUND, username);
     }
     return user.get();
   }

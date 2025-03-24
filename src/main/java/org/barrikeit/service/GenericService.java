@@ -83,7 +83,7 @@ public abstract class GenericService<
     return repository
         .findById(id)
         .map(this.mapper::toDto)
-        .orElseThrow(() -> new NotFoundException(ExceptionConstants.NOT_FOUND, id));
+        .orElseThrow(() -> new NotFoundException(ExceptionConstants.ERROR_NOT_FOUND, id));
   }
 
   /**
@@ -96,7 +96,7 @@ public abstract class GenericService<
   public E findEntity(I id) {
     return repository
         .findById(id)
-        .orElseThrow(() -> new NotFoundException(ExceptionConstants.NOT_FOUND, id));
+        .orElseThrow(() -> new NotFoundException(ExceptionConstants.ERROR_NOT_FOUND, id));
   }
 
   /**
