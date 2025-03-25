@@ -3,8 +3,12 @@ package org.barrikeit.config.security.service;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.Base64;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import org.barrikeit.config.security.model.domain.BasicUserDetails;
@@ -19,6 +23,7 @@ import org.barrikeit.model.domain.User;
 import org.barrikeit.util.constants.ExceptionConstants;
 import org.barrikeit.util.exceptions.BadRequestException;
 import org.barrikeit.util.exceptions.NotFoundException;
+import org.barrikeit.util.exceptions.UnExpectedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -42,6 +47,8 @@ public class AuthService<S extends Session> {
 
   private final JwtDecoder jwtDecoder;
   private final JwtProvider jwtProvider;
+  private final ObjectMapper objectMapper;
+  private final CookieService cookieService;
   private final SessionService<S> sessionService;
   private final BasicUserDetailsService basicUserDetailsService;
 
@@ -111,6 +118,25 @@ public class AuthService<S extends Session> {
 
     session.setAttribute(FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME, username);
     return jwtDto;
+  }
+
+  public void logout(HttpServletRequest request) {
+    request.getSession().invalidate();
+  }
+
+  public JwtDto checkLogin(String cookie, HttpServletResponse response) {
+    if (cookie == null || cookie.trim().isEmpty()) {
+      throw new BadRequestException(ExceptionConstants.EMPTY_COOKIE);
+    }
+
+    try {
+      String decodedJson = new String(Base64.getDecoder().decode(cookie));
+      return objectMapper.readValue(decodedJson, JwtDto.class);
+    } catch (JsonProcessingException e) {
+      throw new UnExpectedException(ExceptionConstants.DESERIALIZED_COOKIE, e);
+    } finally {
+      cookieService.deleteJwtCookie(response);
+    }
   }
 
   private boolean sessionExists(HttpServletRequest request) {

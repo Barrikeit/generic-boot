@@ -1,19 +1,19 @@
 package org.barrikeit.config.security.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
+import org.barrikeit.config.security.service.AuthService;
 import org.barrikeit.config.security.service.dto.JwtDto;
 import org.barrikeit.config.security.service.dto.LoginDto;
 import org.barrikeit.config.security.service.dto.ResponseDto;
-import org.barrikeit.config.security.service.AuthService;
+import org.barrikeit.util.constants.JwtConstants;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.session.Session;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Log4j2
 @Validated
@@ -40,7 +40,18 @@ public class AuthController<S extends Session> {
 
   @PostMapping("/logout")
   public ResponseEntity<ResponseDto> logout(HttpServletRequest request) {
-    request.getSession().invalidate();
+    authService.logout(request);
     return ResponseEntity.ok(new ResponseDto("Logout finalizado con éxito en el servidor"));
+  }
+
+  @PostMapping("/check")
+  public ResponseEntity<JwtDto> checkSession(
+      @CookieValue(name = JwtConstants.JWT_COOKIE_NAME, required = false) String cookie,
+      HttpServletResponse response) {
+    try {
+      return ResponseEntity.ok(authService.checkLogin(cookie, response));
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+    }
   }
 }
