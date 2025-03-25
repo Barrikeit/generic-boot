@@ -17,4 +17,5 @@ public class JwtConstants {
 
   public static final String SESSION_ID = "sessionId";
 
+  public static final String JWT_COOKIE_NAME = "AUTH-JWT";
 }

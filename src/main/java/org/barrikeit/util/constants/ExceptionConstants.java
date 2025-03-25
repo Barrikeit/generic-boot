@@ -10,11 +10,10 @@ public class ExceptionConstants {
   public static final String INTERNAL_SERVER_ERROR = "Internal Server Error";
   public static final String NOT_FOUND = "Not found Exception";
 
-  // Mensages para las nuevas instancias de las Excepciones que extiendan de GenericEsception()
+  // Mensages para las nuevas instancias de las Excepciones que extiendan de GenericException()
   public static final String ERROR_INTERNAL_SERVER =
       "An internal error has occurred. Please contact the administrator.";
-  public static final String ERROR_NOT_FOUND =
-          "Entity not found, {0}";
+  public static final String ERROR_NOT_FOUND = "Entity not found, {0}";
   public static final String ERROR_PARAMS_VALIDATION = "Invalid parameters";
   public static final String ERROR_FIELD_GET_VALUE =
       "Error al obtener el valor del campo {0} de la clase {1}.";
@@ -29,9 +28,14 @@ public class ExceptionConstants {
   public static final String ERROR_TOKEN_EXPIRED = "";
   public static final String ERROR_TOKEN_MISMATCH = "";
   public static final String ERROR_TOKEN_ALREDY_USED = "";
+  public static final String EMPTY_COOKIE = "";
+  public static final String DESERIALIZED_COOKIE = "";
 
-  //
+  // User
   public static final String ERROR_MAX_SESSIONS_CONCURRENT_USER = "";
   public static final String ERROR_USER_BANNED = "";
   public static final String ERROR_USER_NOT_ENABLED = "";
+  public static final String ERROR_USER_NAME_ALREADY_EXISTS = "";
+  public static final String ERROR_USER_EMAIL_ALREADY_EXISTS = "";
+  public static final String ERROR_USER_DEACTIVATE_HIMSELF = "";
 }
