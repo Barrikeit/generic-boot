@@ -23,5 +23,5 @@ public class RoleDto extends GenericDto {
   @Size(max = 50)
   @Sanitize
   @Alphanumeric
-  String role;
+  String name;
 }
