@@ -2,7 +2,7 @@ security:
   cors:
     allowed:
       methods: GET,HEAD,POST,PUT,DELETE
-      headers: "Authorization,content-type,x-aei-called-service,x-aei-session"
+      headers: "Authorization,content-type,x-aei-called-service"
       origins: http://localhost:9891, http://localhost:4200
     enabled: true
     path:

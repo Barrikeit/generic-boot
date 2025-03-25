@@ -9,7 +9,6 @@ import org.barrikeit.config.security.util.JwtProvider;
 import org.barrikeit.config.security.config.filter.AppHeaderValidatorFilter;
 import org.barrikeit.config.security.config.filter.JwtAuthFilter;
 import org.barrikeit.config.security.config.filter.JwtFilter;
-import org.barrikeit.config.security.config.filter.SessionHeaderValidatorFilter;
 import org.barrikeit.config.security.service.SessionService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -91,7 +90,6 @@ public class SecurityConfiguration<S extends Session> {
 
     http.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
     http.addFilterAfter(appHeaderValidatorFilter(), JwtFilter.class);
-    http.addFilterAfter(sessionHeaderValidatorFilter(), AppHeaderValidatorFilter.class);
 
     return http.build();
   }
@@ -104,11 +102,6 @@ public class SecurityConfiguration<S extends Session> {
   @Bean
   AppHeaderValidatorFilter appHeaderValidatorFilter() {
     return new AppHeaderValidatorFilter(appValidatorFilterProperties);
-  }
-
-  @Bean
-  SessionHeaderValidatorFilter sessionHeaderValidatorFilter() {
-    return new SessionHeaderValidatorFilter();
   }
 
   FilterRegistrationBean<JwtAuthFilter> requestHeaderAuthenticationFilter(
