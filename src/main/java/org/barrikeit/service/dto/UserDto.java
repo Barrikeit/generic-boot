@@ -23,7 +23,7 @@ public class UserDto extends GenericDto {
 
   @NotEmpty @Alphanumeric private String username;
 
-  @JsonIgnore @ValidPassword private String password;
+  @ValidPassword private String password;
 
   @NotEmpty @Email private String email;
 

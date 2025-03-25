@@ -55,7 +55,7 @@ public abstract class GenericController<
    * @param id the identifier of the entity to retrieve.
    * @return a response entity containing the requested DTO.
    */
-  @GetMapping("/{id}")
+  @GetMapping("/id/{id}")
   public ResponseEntity<D> findById(@PathVariable("id") S id) {
     return ResponseEntity.ok(service.find(id));
   }
