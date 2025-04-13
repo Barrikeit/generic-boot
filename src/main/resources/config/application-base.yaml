@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:2345/generic
+    url: jdbc:postgresql://localhost:5432/generic
     driverClassName: org.postgresql.Driver
-    username: user
-    password: "pass"
+    username: generic
+    password: "generic"
     hikari:
       pool-name: Hikari
       auto-commit: false
