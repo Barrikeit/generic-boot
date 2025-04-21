@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import lombok.extern.log4j.Log4j2;
 import org.barrikeit.model.domain.GenericEntity;
 import org.barrikeit.service.dto.GenericDto;
 import org.barrikeit.util.constants.ExceptionConstants;
@@ -21,6 +23,7 @@ import org.barrikeit.util.exceptions.NotFoundException;
 import org.barrikeit.util.exceptions.UnExpectedException;
 import org.springframework.util.ReflectionUtils;
 
+@Log4j2
 public class ReflectionUtil extends ReflectionUtils {
   private ReflectionUtil() {
     throw new IllegalStateException("ReflectionUtil class");
@@ -98,12 +101,11 @@ public class ReflectionUtil extends ReflectionUtils {
    * @return La clase correspondiente al tipo genérico parametrizado.
    * @throws ClassCastException Si no se puede convertir el tipo genérico al tipo esperado.
    */
+  @SuppressWarnings("unchecked")
   public static <E> Class<E> getParameterizedTypeClass(Class<E> clazz, int index) {
     ParameterizedType parameterizedType = (ParameterizedType) clazz.getGenericSuperclass();
     Type[] typeArguments = parameterizedType.getActualTypeArguments();
-    @SuppressWarnings("unchecked")
-    Class<E> tClass = (Class<E>) typeArguments[index];
-    return tClass;
+    return (Class<E>) typeArguments[index];
   }
 
   /**

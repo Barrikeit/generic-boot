@@ -4,16 +4,16 @@ application:
   module: users
 
 server:
-  port: 9991
-  context-path: /generic
-  apiPath: /api/*
+  port: 9891
   timeZone: Europe/Madrid
   servlet:
+    context-path: /generic
+    apiPath: /api/v1
     encoding:
-      force-response: true
       charset: UTF-8
       enabled: true
       force: true
+      force-response: true
 
 spring:
   application.name: generic
@@ -24,4 +24,6 @@ spring:
     import:
       - application-base.yaml
       - optional:application-datasource.yaml
+      - application-security.yaml
+      - application-flyway.yaml
       - application-@spring.profiles.active@.yaml

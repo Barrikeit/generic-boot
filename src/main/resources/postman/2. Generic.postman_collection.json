@@ -1,0 +1,471 @@
+{
+	"info": {
+		"_postman_id": "dd1580bd-2844-4a91-9f1e-93c1f0439ad2",
+		"name": "2. Generic",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23593847"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseData = JSON.parse(responseBody);\r",
+							"pm.globals.set(\"authToken\", responseData.jwt);\r",
+							"pm.globals.set(\"refreshToken\", responseData.refreshToken);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var requestBody = JSON.parse(pm.request.body);\r",
+							"pm.environment.set(\"username\", requestBody.username);\r",
+							"pm.environment.set(\"password\", requestBody.password);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-aei-called-service",
+						"value": "generic-security",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"keit\",\r\n    \"password\": \"1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{securityUrl}}/auth/login",
+					"host": [
+						"{{securityUrl}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login PreRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"try {\r",
+							"    if (pm.globals.get(\"authToken\") != null){\r",
+							"        const preRequest = await pm.sendRequest({\r",
+							"                url: pm.variables.get(\"securityBaseUrl\") + \"/auth/login\",\r",
+							"                method: \"POST\",\r",
+							"                header: {\r",
+							"                    \"accept\": \"application/json\",\r",
+							"                    \"x-aei-called-service\": \"lbda-security\",\r",
+							"                    \"x-aei-session\": \"swagger#swagger#swagger\",\r",
+							"                    \"Content-Type\": \"application/json\",\r",
+							"                },\r",
+							"                body: {\r",
+							"                    mode: \"raw\",\r",
+							"                    raw: JSON.parse({\r",
+							"                        username: pm.variables.get(\"username\"),\r",
+							"                        password: pm.variables.get(\"password\")\r",
+							"                    })\r",
+							"                }\r",
+							"            });\r",
+							"        pm.globals.set(\"authToken\", JSON.parse(preRequest).jwt);\r",
+							"        pm.globals.set(\"refreshToken\", JSON.parse(preRequest).refreshToken);\r",
+							"        console.log(\"AuthToken and RefreshToken set successfully.\");\r",
+							"    }    \r",
+							"} catch (err) {\r",
+							"    console.error(\"Error during authentication request:\", err);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-aei-called-service",
+						"value": "generic-security",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"keit\",\r\n    \"password\": \"12334\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{securityUrl}}/auth/login",
+					"host": [
+						"{{securityUrl}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.globals.set(\"authToken\", null);\r",
+							"pm.globals.set(\"refreshToken\", null);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-aei-called-service",
+						"value": "generic-security",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{securityUrl}}/auth/logout",
+					"host": [
+						"{{securityUrl}}"
+					],
+					"path": [
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Users",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-aei-called-service",
+						"value": "generic-security",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{securityUrl}}/users",
+					"host": [
+						"{{securityUrl}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User By Id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-aei-called-service",
+						"value": "generic-security",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{securityUrl}}/users/id/:id",
+					"host": [
+						"{{securityUrl}}"
+					],
+					"path": [
+						"users",
+						"id",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User By Username",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-aei-called-service",
+						"value": "generic-security",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{securityUrl}}/users/:username",
+					"host": [
+						"{{securityUrl}}"
+					],
+					"path": [
+						"users",
+						":username"
+					],
+					"variable": [
+						{
+							"key": "username",
+							"value": "keit"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Save User",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-aei-called-service",
+						"value": "generic-security",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"prueba\",\r\n    \"password\": \"1234\",\r\n    \"email\": \"prueba@prueba.com\",\r\n    \"enabled\": false,\r\n    \"banned\": false,\r\n    \"banDate\": null,\r\n    \"loginDate\": null,\r\n    \"loginAttempts\": 0,\r\n    \"roles\": [\r\n        {\r\n            \"code\": \"AD\",\r\n            \"name\": \"Admin\"\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{securityUrl}}/users",
+					"host": [
+						"{{securityUrl}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-aei-called-service",
+						"value": "generic-security",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"prueba\",\r\n    \"password\": null,\r\n    \"email\": \"prueba@prueba.com\",\r\n    \"enabled\": true,\r\n    \"banned\": false,\r\n    \"banDate\": null,\r\n    \"loginDate\": null,\r\n    \"loginAttempts\": 0,\r\n    \"roles\": [\r\n        {\r\n            \"code\": \"AD\",\r\n            \"name\": \"Admin\"\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{securityUrl}}/users/:id/update",
+					"host": [
+						"{{securityUrl}}"
+					],
+					"path": [
+						"users",
+						":id",
+						"update"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "8"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-aei-called-service",
+						"value": "generic-security",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{securityUrl}}/users/:id",
+					"host": [
+						"{{securityUrl}}"
+					],
+					"path": [
+						"users",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "8"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

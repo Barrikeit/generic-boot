@@ -1,0 +1,76 @@
+{
+	"info": {
+		"_postman_id": "55357b61-5598-4c8d-bc9f-3d6a4a083b9a",
+		"name": "1. Environment SetUp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23593847"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseData = JSON.parse(responseBody);\r",
+							"pm.globals.set(\"authToken\", responseData.jwt);\r",
+							"pm.globals.set(\"refreshToken\", responseData.refreshToken);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.set(\"securityUrl\", pm.environment.get(\"baseUrl\") + pm.environment.get(\"security\") + pm.environment.get(\"apiVersion\"));\r",
+							"\r",
+							"var requestBody = JSON.parse(pm.request.body);\r",
+							"pm.environment.set(\"username\", requestBody.username);\r",
+							"pm.environment.set(\"password\", requestBody.password);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-aei-called-service",
+						"value": "generic-security",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"keit\",\r\n    \"password\": \"1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}{{security}}{{apiVersion}}/auth/login",
+					"host": [
+						"{{baseUrl}}{{security}}{{apiVersion}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -2,9 +2,7 @@ package org.barrikeit.config;
 
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
-import org.barrikeit.util.constants.ConfigurationConstants;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -17,8 +15,8 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 @Log4j2
-@EnableWebMvc
 @Configuration
+@EnableWebMvc
 public class MvcConfiguration implements WebMvcConfigurer {
 
   @Override
@@ -43,6 +41,6 @@ public class MvcConfiguration implements WebMvcConfigurer {
 
   @Override
   public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-    configurer.enable("generic");
+    configurer.enable("/generic");
   }
 }
