@@ -7,13 +7,13 @@ security:
     enabled: true
     path:
       pattern: /**
-  app-validator-filter:
-    app-self-name: 'generic-security'
-    app-header-name: 'x-aei-called-service'
-    app-header-name-validation-Filter: true
-    app-security-name: 'generic-security-service'
   jwt:
     issuer: keit
     secret: keit_secret
     expiration: 3600
     expiration-refresh: 4500
+  app-validator-filter:
+    app-self-name: 'generic-security'
+    app-header-name: 'x-aei-called-service'
+    app-header-name-validation-Filter: true
+    app-security-name: 'generic-security-service'

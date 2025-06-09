@@ -14,14 +14,3 @@ spring:
       session-management:
         concurrency-control:
           max-sessions: 5
-
-auth:
-  cookie:
-    http:
-      only: true
-    secure: true
-    path: /
-    domain: localhost
-    samesite: Lax
-    max:
-      age: 60

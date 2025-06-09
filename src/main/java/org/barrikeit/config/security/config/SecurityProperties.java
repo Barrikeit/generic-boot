@@ -34,16 +34,6 @@ public class SecurityProperties {
 
   @Getter
   @Setter
-  @ConfigurationProperties(prefix = "security.app-validator-filter", ignoreUnknownFields = false)
-  public static class AppValidatorFilterProperties {
-    private String appSelfName;
-    private String appHeaderName;
-    private Boolean appHeaderNameValidationFilter;
-    private String appSecurityName;
-  }
-
-  @Getter
-  @Setter
   @ConfigurationProperties(prefix = "security.jwt", ignoreUnknownFields = false)
   public static class JwtProperties {
     @NotBlank String issuer;
@@ -54,5 +44,15 @@ public class SecurityProperties {
 
     @Min(0)
     long expirationRefresh;
+  }
+
+  @Getter
+  @Setter
+  @ConfigurationProperties(prefix = "security.app-validator-filter", ignoreUnknownFields = false)
+  public static class AppValidatorFilterProperties {
+    private String appSelfName;
+    private String appHeaderName;
+    private Boolean appHeaderNameValidationFilter;
+    private String appSecurityName;
   }
 }

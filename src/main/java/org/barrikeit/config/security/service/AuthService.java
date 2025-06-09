@@ -6,7 +6,6 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.Base64;
 import java.util.Collection;
@@ -48,53 +47,151 @@ public class AuthService<S extends Session> {
   private final JwtDecoder jwtDecoder;
   private final JwtProvider jwtProvider;
   private final ObjectMapper objectMapper;
-  private final CookieService cookieService;
   private final SessionService<S> sessionService;
   private final BasicUserDetailsService basicUserDetailsService;
 
   @Value("${spring.security.http.session-management.concurrency-control.max-sessions}")
   private Integer maxNumberConcurrentSessionsUser;
 
-  public JwtDto login(LoginDto loginDto, HttpServletRequest request) {
-    if (!sessionExists(request)) {
-      Collection<? extends Session> usersSessions =
-          sessionService.findByPrincipalName(loginDto.getUsername()).values();
-      if (usersSessions.size() >= maxNumberConcurrentSessionsUser) {
-        if (request.getSession(false) != null) {
-          request.getSession(false).invalidate();
-        }
-        throw new BadRequestException(
-            ExceptionConstants.ERROR_MAX_SESSIONS_CONCURRENT_USER, loginDto.getUsername());
-      }
-    }
+  /**
+   * Login method
+   *
+   * @param request
+   * @param loginDto
+   * @return JwtDto with the token
+   * @throws
+   */
+  public JwtDto login(HttpServletRequest request, LoginDto loginDto) {
+    validateSession(request, loginDto);
 
-    if (request.getSession(false) != null) {
-      request.getSession(false).invalidate();
-    }
+    request.getSession(false).invalidate();
     HttpSession httpSession = request.getSession(true);
-    String sessionId = httpSession.getId();
 
     try {
-      JwtDto dto = signIn(loginDto, sessionId);
-      JwtAuth auth =
-          new JwtAuth(
-              loginDto.getUsername(), null, dto.getJwt(), jwtDecoder.getAuthorities(dto.getJwt()));
-      SecurityContext context = SecurityContextHolder.createEmptyContext();
-      context.setAuthentication(auth);
-      SecurityContextHolder.setContext(context);
-
-      httpSession.setAttribute(
-          FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME, loginDto.getUsername());
-      httpSession.setAttribute(
-          HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-          SecurityContextHolder.getContext());
-      return dto;
+      JwtDto jwtDto = signIn(loginDto, httpSession.getId());
+      associateUserWithSession(loginDto, jwtDto, httpSession);
+      return jwtDto;
     } catch (Exception e) {
       request.getSession(false).invalidate();
       throw e;
     }
   }
 
+  private void validateSession(HttpServletRequest request, LoginDto loginDto) {
+    if (request == null || request.getSession(false) == null) {
+      throw new IllegalArgumentException(ExceptionConstants.ERROR_REQUEST_MUST_NOT_BE_NULL);
+    }
+
+    if (!sessionExists(request)) {
+      Collection<? extends Session> usersSessions =
+          sessionService.findByPrincipalName(loginDto.getUsername()).values();
+      if (usersSessions.size() >= maxNumberConcurrentSessionsUser) {
+        request.getSession(false).invalidate();
+        throw new BadRequestException(
+            ExceptionConstants.ERROR_MAX_SESSIONS_CONCURRENT_USER, loginDto.getUsername());
+      }
+    }
+  }
+
+  private boolean sessionExists(HttpServletRequest request) {
+    String token = extractToken(request);
+    String sessionId = "";
+    S sesion;
+    if (StringUtils.hasText(token)) {
+      sessionId = jwtDecoder.getSessionIdFromToken(token);
+    } else {
+      sessionId = request.getSession(false).getId();
+    }
+    sesion = this.sessionService.findById(sessionId);
+    return sesion != null
+        && sesion.getAttribute(FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME) != null;
+  }
+
+  private String extractToken(HttpServletRequest request) {
+    String headerAuth = request.getHeader(HttpHeaders.AUTHORIZATION);
+    String jwt = null;
+    if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+      jwt = headerAuth.substring(7);
+    }
+    return jwt;
+  }
+
+  private JwtDto signIn(LoginDto loginDto, String sessionId) {
+    final String username = loginDto.getUsername();
+    final String password = loginDto.getPassword();
+    final Authentication authentication;
+    final Jwt jwt;
+    final Jwt jwtRefresh;
+    User user;
+    try {
+      UsernamePasswordAuthenticationToken token =
+          new UsernamePasswordAuthenticationToken(username, password);
+      authentication = authRepository.authenticate(token);
+
+      if (authentication == null) {
+        throw new NotFoundException(ExceptionConstants.NOT_FOUND, username);
+      }
+
+      jwt = jwtProvider.generateToken((BasicUserDetails) authentication.getPrincipal(), sessionId);
+      jwtRefresh =
+          jwtProvider.generateRefreshToken(
+              (BasicUserDetails) authentication.getPrincipal(), sessionId);
+    } catch (AuthenticationException e) {
+      user = basicUserDetailsService.findByUsername(username);
+      basicUserDetailsService.checkAttempts(user);
+      throw e;
+    }
+    return getJwtDto(jwt, jwtRefresh, username);
+  }
+
+  private JwtDto getJwtDto(Jwt newToken, Jwt newTokenRefresh, String username) {
+    User user = basicUserDetailsService.findByUsername(username);
+    if (Boolean.TRUE.equals(user.isBanned()))
+      throw new BadRequestException(
+          ExceptionConstants.ERROR_USER_BANNED, user.getUsername(), user.getBanDate());
+
+    if (Boolean.FALSE.equals(user.isEnabled()))
+      throw new BadRequestException(ExceptionConstants.ERROR_USER_NOT_ENABLED, user.getUsername());
+
+    basicUserDetailsService.updateLoginDateAndResetAttempts(user);
+    return createJwtDto(newToken, newTokenRefresh);
+  }
+
+  private JwtDto createJwtDto(Jwt token, Jwt refreshToken) {
+    return JwtDto.builder()
+        .expireAt(token.getExpiresAt())
+        .jwt(token.getJwtCache(false))
+        .refreshToken(refreshToken.getJwtCache(true))
+        .expireRefreshAt(refreshToken.getExpiresAt())
+        .userDto(basicUserDetailsService.findDtoByUsername(token.getSubject()))
+        .build();
+  }
+
+  private void associateUserWithSession(LoginDto loginDto, JwtDto jwtDto, HttpSession httpSession) {
+    JwtAuth auth =
+        new JwtAuth(
+            loginDto.getUsername(),
+            null,
+            jwtDto.getJwt(),
+            jwtDecoder.getAuthorities(jwtDto.getJwt()));
+    SecurityContext context = SecurityContextHolder.createEmptyContext();
+    context.setAuthentication(auth);
+    SecurityContextHolder.setContext(context);
+
+    httpSession.setAttribute(
+        FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME, loginDto.getUsername());
+    httpSession.setAttribute(
+        HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+        SecurityContextHolder.getContext());
+  }
+
+  /**
+   * Refresh JWT method
+   *
+   * @param request
+   * @return JwtDto with the refreshed token
+   * @throws
+   */
   public JwtDto refresh(HttpServletRequest request) {
     String token = extractToken(request);
     BasicUserDetails userDetails = loadUserDetails(token);
@@ -118,78 +215,6 @@ public class AuthService<S extends Session> {
 
     session.setAttribute(FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME, username);
     return jwtDto;
-  }
-
-  public void logout(HttpServletRequest request) {
-    request.getSession().invalidate();
-  }
-
-  public JwtDto checkLogin(String cookie, HttpServletResponse response) {
-    if (cookie == null || cookie.trim().isEmpty()) {
-      throw new BadRequestException(ExceptionConstants.EMPTY_COOKIE);
-    }
-
-    try {
-      String decodedJson = new String(Base64.getDecoder().decode(cookie));
-      return objectMapper.readValue(decodedJson, JwtDto.class);
-    } catch (JsonProcessingException e) {
-      throw new UnExpectedException(ExceptionConstants.DESERIALIZED_COOKIE, e);
-    } finally {
-      cookieService.deleteJwtCookie(response);
-    }
-  }
-
-  private boolean sessionExists(HttpServletRequest request) {
-    String token = extractToken(request);
-    String sessionId = "";
-    S sesion;
-    if (StringUtils.hasText(token)) {
-      sessionId = jwtDecoder.getSessionIdFromToken(token);
-    } else {
-      if (request.getSession(false) != null) {
-        sessionId = request.getSession(false).getId();
-      }
-    }
-    sesion = this.sessionService.findById(sessionId);
-    return sesion != null
-        && sesion.getAttribute(FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME) != null;
-  }
-
-  private JwtDto signIn(LoginDto loginDto, String sessionId) {
-    final String username = loginDto.getUsername();
-    final String password = loginDto.getPassword();
-    final Authentication authentication;
-    final Jwt jwt;
-    final Jwt jwtRefresh;
-    User user;
-    try {
-      UsernamePasswordAuthenticationToken token =
-          new UsernamePasswordAuthenticationToken(username, password);
-      authentication = authRepository.authenticate(token);
-
-      if (authentication == null) {
-        throw new NotFoundException(ExceptionConstants.ERROR_NOT_FOUND, username);
-      }
-
-      jwt = jwtProvider.generateToken((BasicUserDetails) authentication.getPrincipal(), sessionId);
-      jwtRefresh =
-          jwtProvider.generateRefreshToken(
-              (BasicUserDetails) authentication.getPrincipal(), sessionId);
-    } catch (AuthenticationException e) {
-      user = basicUserDetailsService.findByUsername(username);
-      basicUserDetailsService.checkAttempts(user);
-      throw e;
-    }
-    return getJwtDto(jwt, jwtRefresh, username);
-  }
-
-  private String extractToken(HttpServletRequest request) {
-    String headerAuth = request.getHeader(HttpHeaders.AUTHORIZATION);
-    String jwt = null;
-    if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-      jwt = headerAuth.substring(7);
-    }
-    return jwt;
   }
 
   private BasicUserDetails loadUserDetails(String jwt) throws AuthenticationException {
@@ -222,26 +247,33 @@ public class AuthService<S extends Session> {
     return getJwtDto(newToken, newTokenRefresh, userDetails.getUsername());
   }
 
-  private JwtDto getJwtDto(Jwt newToken, Jwt newTokenRefresh, String username) {
-    User user = basicUserDetailsService.findByUsername(username);
-    if (Boolean.TRUE.equals(user.isBanned()))
-      throw new BadRequestException(
-          ExceptionConstants.ERROR_USER_BANNED, user.getUsername(), user.getBanDate());
-
-    if (Boolean.FALSE.equals(user.isEnabled()))
-      throw new BadRequestException(ExceptionConstants.ERROR_USER_NOT_ENABLED, user.getUsername());
-
-    basicUserDetailsService.updateLoginDateAndResetAttempts(user);
-    return createJwtDto(newToken, newTokenRefresh);
+  /**
+   * Logout method, invalidate the session
+   *
+   * @param request
+   * @throws
+   */
+  public void logout(HttpServletRequest request) {
+    request.getSession().invalidate();
   }
 
-  private JwtDto createJwtDto(Jwt token, Jwt refreshToken) {
-    return JwtDto.builder()
-        .expireAt(token.getExpiresAt())
-        .jwt(token.getJwtCache(false))
-        .refreshToken(refreshToken.getJwtCache(true))
-        .expireRefreshAt(refreshToken.getExpiresAt())
-        .userDto(basicUserDetailsService.findDtoByUsername(token.getSubject()))
-        .build();
+  /**
+   * Check Login through cookie method
+   *
+   * @param cookie
+   * @return JwtDto with the refreshed token
+   * @throws
+   */
+  public JwtDto checkLogin(String cookie) {
+    if (cookie == null || cookie.trim().isEmpty()) {
+      throw new BadRequestException(ExceptionConstants.EMPTY_COOKIE);
+    }
+
+    try {
+      String decodedJson = new String(Base64.getDecoder().decode(cookie));
+      return objectMapper.readValue(decodedJson, JwtDto.class);
+    } catch (JsonProcessingException e) {
+      throw new UnExpectedException(ExceptionConstants.DESERIALIZED_COOKIE, e);
+    }
   }
 }
