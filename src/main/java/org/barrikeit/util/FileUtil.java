@@ -2,20 +2,13 @@ package org.barrikeit.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.Normalizer;
 import java.util.*;
 import lombok.extern.log4j.Log4j2;
-import org.barrikeit.util.constants.ConfigurationConstants;
-import org.barrikeit.util.constants.ExceptionConstants;
-import org.barrikeit.util.exceptions.GenericException;
-import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
-import org.springframework.core.env.EnumerablePropertySource;
-import org.springframework.core.env.MutablePropertySources;
-import org.springframework.core.env.PropertiesPropertySource;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
 
 @Log4j2
 public class FileUtil {
@@ -23,96 +16,83 @@ public class FileUtil {
     throw new IllegalStateException("FileUtil class");
   }
 
-  public static File createTempFolder(String tempName, int port) {
+  public static File getResourceFile(String resourcePath) {
     try {
-      File tempDir = Files.createTempDirectory(tempName + "." + port + ".").toFile();
-      tempDir.deleteOnExit();
-      return tempDir;
-    } catch (IOException e) {
-      log.error(e.getMessage());
-      throw new GenericException(HttpStatus.BAD_REQUEST, ExceptionConstants.BAD_REQUEST);
-    }
-  }
-
-  public static boolean scanAndLoadConfigFiles(MutablePropertySources propertySources) {
-    for (String path : ConfigurationConstants.CONFIG_LOCATIONS) {
-      for (String extension : ConfigurationConstants.CONFIG_EXTENSIONS) {
-        if (loadFile(propertySources, resolvePath(path, "application." + extension))) {
-          List<String> imports = getPropertyList(propertySources, "spring.config.import");
-          imports.forEach(importFile -> loadFile(propertySources, resolvePath(path, importFile)));
-          return true;
-        }
+      URL url = Thread.currentThread().getContextClassLoader().getResource(resourcePath);
+      if (url == null) {
+        log.error("Resource not found on classpath: {}", resourcePath);
+        throw new RuntimeException("Resource not found: " + resourcePath);
       }
+      File file = new File(url.toURI());
+      log.info("Loaded resource from classpath: {}", file);
+      return file;
+    } catch (URISyntaxException e) {
+      log.error("Invalid URI for resource {}: {}", resourcePath, e.getMessage());
+      throw new RuntimeException(e);
     }
-    return false;
   }
 
-  private static boolean loadFile(MutablePropertySources propertySources, String filePath) {
-    Resource resource = new ClassPathResource(filePath);
-    if (!resource.exists()) {
-      // log.warn("Class path resource [{}] does not exist", filePath);
-      return false;
-    }
-
-    log.info("Loading config file: {}", filePath);
-    if (filePath.endsWith(".properties")) {
-      return loadPropertiesFile(propertySources, resource, filePath);
-    } else if (filePath.endsWith(".yaml") || filePath.endsWith(".yml")) {
-      return loadYamlFile(propertySources, resource, filePath);
-    }
-    return false;
-  }
-
-  private static boolean loadPropertiesFile(
-      MutablePropertySources propertySources, Resource resource, String propertiesFile) {
-    try (InputStream input = resource.getInputStream()) {
-      Properties properties = new Properties();
-      properties.load(input);
-      propertySources.addLast(new PropertiesPropertySource(propertiesFile, properties));
-      return true;
+  public static File tempFile(String fileName, String extension) {
+    File temp = null;
+    try {
+      fileName = sanitizeFileName(fileName);
+      String time = TimeUtil.formatLocalDateTime(TimeUtil.localDateTimeNow());
+      temp = File.createTempFile("temp_" + fileName + "_" + time + "_", extension);
+      temp.deleteOnExit();
     } catch (IOException e) {
-      log.warn("Cannot resolve path for properties file: {}", propertiesFile, e);
-      return false;
+      log.error(
+          "IOException al intentar crear el fichero temporal {}.\n{}", fileName, e.getMessage());
+      throw new RuntimeException("Error al crear el fichero " + fileName + ".");
+    }
+    return temp;
+  }
+
+  public static File copyFile(File file) {
+    File copy = null;
+    try {
+      String originalName = file.getName();
+      String extension = getFileExtension(originalName);
+      String fileName = originalName.replaceAll(extension, "");
+
+      copy = tempFile(fileName, extension);
+      org.apache.commons.io.FileUtils.copyFile(file, copy);
+    } catch (IOException e) {
+      log.error(
+          "IOException al intentar copiar el fichero {}.\n{}", file.getName(), e.getMessage());
+    }
+    return copy;
+  }
+
+  public static void deleteFile(File file) {
+    try {
+      Path path = file.toPath();
+      if (Files.deleteIfExists(path)) {
+        log.info("El archivo {} ha sido eliminado correctamente", path.toAbsolutePath());
+      } else {
+        log.warn("El archivo {} no se ha podido eliminar", path.toAbsolutePath());
+      }
+    } catch (IOException e) {
+      log.error(
+          "Error al intentar eliminar el archivo {}: {}", file.getAbsolutePath(), e.getMessage());
     }
   }
 
-  private static boolean loadYamlFile(
-      MutablePropertySources propertySources, Resource resource, String yamlFile) {
-    YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
-    yaml.setResources(resource);
-    Properties properties = yaml.getObject();
-    if (properties != null) {
-      propertySources.addLast(new PropertiesPropertySource(yamlFile, properties));
-      return true;
+  public static String getFileExtension(String filePath) {
+    int index = filePath.lastIndexOf('.');
+    if (index > 0) {
+      return filePath.substring(index);
+    } else {
+      log.error("Error al obtener extension del archivo para el path {}", filePath);
+      return "";
     }
-    log.warn("Failed to load YAML file: {}", yamlFile);
-    return false;
   }
 
-  private static String resolvePath(String basePath, String importFile) {
-    if (importFile.startsWith("classpath:") || importFile.startsWith("/")) {
-      return importFile;
-    }
-    basePath = basePath.endsWith("/") ? basePath.substring(0, basePath.length() - 1) : basePath;
-    return (importFile.startsWith("/") || importFile.startsWith("../"))
-        ? basePath + importFile
-        : basePath + "/" + importFile;
-  }
-
-  private static List<String> getPropertyList(
-      MutablePropertySources propertySources, String keyPrefix) {
-    List<String> values = new ArrayList<>();
-    propertySources.forEach(
-        source -> {
-          if (source instanceof EnumerablePropertySource<?> enumerableSource) {
-            Arrays.stream(enumerableSource.getPropertyNames())
-                .filter(propertyName -> propertyName.startsWith(keyPrefix))
-                .map(enumerableSource::getProperty)
-                .filter(String.class::isInstance)
-                .map(String.class::cast)
-                .forEach(values::add);
-          }
-        });
-    return values;
+  public static String sanitizeFileName(String fileName) {
+    return Normalizer.normalize(fileName.trim(), Normalizer.Form.NFD)
+        .replace(" ", "_")
+        .replace("ñ", "ny")
+        .replace("Ñ", "Ny")
+        .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+        .replaceAll("[^\\p{ASCII}]", "");
   }
 }

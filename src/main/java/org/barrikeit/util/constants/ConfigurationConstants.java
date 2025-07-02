@@ -16,4 +16,11 @@ public class ConfigurationConstants {
 
   public static final String[] CONFIG_LOCATIONS = {"/", "/config/", "/configuration/"};
   public static final String[] CONFIG_EXTENSIONS = {"properties", "yml", "yaml"};
+
+  public static final String SPRING_PROFILE_TEST = "test";
+  public static final String SPRING_PROFILE_DEVELOPMENT = "dev";
+  public static final String SPRING_PROFILE_PRODUCTION = "prod";
+
+  public static final String REFRESH_TOKEN_ENDPOINT = "/public/auth/refresh";
+  public static final String EXPRESION_REGULAR_PARAMETROS = "(\\w+)([:!><])([^,]+)";
 }

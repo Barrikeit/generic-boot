@@ -31,10 +31,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @param <D> the DTO type that extends {@link GenericDto}.
  */
 @Log4j2
+@Validated
 @AllArgsConstructor
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public abstract class GenericController<
-    E extends GenericEntity, S extends Serializable, D extends GenericDto> {
+    E extends GenericEntity<S>, S extends Serializable, D extends GenericDto> {
 
   private final GenericService<E, S, D> service;
 
@@ -54,7 +55,7 @@ public abstract class GenericController<
    * @param id the identifier of the entity to retrieve.
    * @return a response entity containing the requested DTO.
    */
-  @GetMapping("/{id}")
+  @GetMapping("/id/{id}")
   public ResponseEntity<D> findById(@PathVariable("id") S id) {
     return ResponseEntity.ok(service.find(id));
   }
@@ -77,7 +78,7 @@ public abstract class GenericController<
    * @param dto the DTO containing the updated entity information.
    * @return a response entity containing the updated DTO.
    */
-  @PutMapping("/{id}/update")
+  @PutMapping("/id/{id}/update")
   public ResponseEntity<D> update(@PathVariable("id") S id, @RequestBody D dto) {
     return ResponseEntity.ok(service.update(id, dto));
   }
@@ -88,7 +89,7 @@ public abstract class GenericController<
    * @param id the identifier of the entity to delete.
    * @return a response entity indicating the operation's result.
    */
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/id/{id}")
   public ResponseEntity<Void> delete(@PathVariable("id") S id) {
     service.delete(id);
     return ResponseEntity.noContent().build();

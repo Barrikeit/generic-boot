@@ -1,0 +1,57 @@
+{
+	"id": "b0d79e73-cc4d-48ae-a119-39bc1788805d",
+	"name": "local",
+	"values": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "baseUrlSSL",
+			"value": "https://localhost",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "baseWsUrl",
+			"value": "ws://localhost",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "baseWsUrlSSL",
+			"value": "wss://localhost",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "port",
+			"value": ":9891",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "apiVersion",
+			"value": "/generic/api/v1",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "username",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "password",
+			"value": "",
+			"type": "secret",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2025-07-01T20:22:34.520Z",
+	"_postman_exported_using": "Postman/11.40.6"
+}

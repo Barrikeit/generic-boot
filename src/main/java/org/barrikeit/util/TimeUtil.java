@@ -8,11 +8,10 @@ import java.util.Date;
 import org.barrikeit.util.constants.UtilConstants;
 import org.barrikeit.util.exceptions.UnExpectedException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TimeUtil {
-  private TimeUtil() {
-    throw new IllegalStateException("TimeUtil class");
-  }
 
   private static String zone;
 
@@ -66,5 +65,17 @@ public class TimeUtil {
 
   public static LocalDateTime castToLocalDateTime(Timestamp timestamp) {
     return timestamp.toInstant().atZone(ZoneId.of(zone)).toLocalDateTime();
+  }
+
+  public static String formatLocalDate(LocalDate date) {
+    DateTimeFormatter dateFormatter =
+        DateTimeFormatter.ofPattern(UtilConstants.PATTERN_LOCAL_DATE_DOWNLOAD);
+    return date.format(dateFormatter);
+  }
+
+  public static String formatLocalDateTime(LocalDateTime date) {
+    DateTimeFormatter dateTimeFormatter =
+        DateTimeFormatter.ofPattern(UtilConstants.PATTERN_DATE_TIME_DOWNLOAD);
+    return date.format(dateTimeFormatter);
   }
 }
