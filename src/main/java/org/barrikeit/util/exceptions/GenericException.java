@@ -23,20 +23,4 @@ public class GenericException extends ErrorResponseException {
     this.setType(type);
     this.setTitle(title);
   }
-
-  public GenericException(ExceptionMessage exceptionMessage) {
-    super(
-        HttpStatus.valueOf(Integer.parseInt(exceptionMessage.getStatus())),
-        ProblemDetail.forStatus(Integer.parseInt(exceptionMessage.getStatus())),
-        new Throwable());
-
-    if (ObjectUtils.isEmpty(exceptionMessage.getDetail())
-        && ObjectUtils.isEmpty(exceptionMessage.getMessage())) {
-      this.setTitle(ExceptionConstants.INTERNAL_SERVER_ERROR);
-      this.setDetail(ExceptionConstants.ERROR_INTERNAL_SERVER);
-    }
-    if (exceptionMessage.getType() != null) this.setType(URI.create(exceptionMessage.getType()));
-    if (exceptionMessage.getInstance() != null)
-      this.setInstance(URI.create(exceptionMessage.getInstance()));
-  }
 }
