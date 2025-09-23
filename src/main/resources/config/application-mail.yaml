@@ -1,0 +1,12 @@
+mail:
+  host: smtp.host.es
+  port: 0
+  user: user
+  pass: "pass"
+  from: generic@generic.es
+  properties:
+    protocol: smtp
+    auth: true
+    starttls: true
+    debug: true
+  activacion-url: http://localhost:8080/generic
