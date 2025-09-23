@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.barrikeit.model.domain.GenericEntity;
 import org.barrikeit.model.repository.GenericRepository;
-import org.barrikeit.service.dto.GenericDto;
+import org.barrikeit.rest.dto.GenericDto;
 import org.barrikeit.service.mapper.GenericMapper;
 import org.barrikeit.util.constants.EntityConstants;
 import org.barrikeit.util.constants.ExceptionConstants;
@@ -22,14 +22,14 @@ import org.springframework.transaction.annotation.Transactional;
  * access and uses a {@link GenericMapper} for object mapping between entities and DTOs.
  *
  * @param <E> the entity type that extends {@link GenericEntity}.
- * @param <S> the type of the entity's identifier, which must be {@link Serializable}.
+ * @param <I> the type of the entity's identifier, which must be {@link Serializable}.
  * @param <D> the DTO type that extends {@link GenericDto}.
  */
 @Log4j2
 @AllArgsConstructor
 public abstract class GenericService<
-    E extends GenericEntity, S extends Serializable, D extends GenericDto> {
-  private final GenericRepository<E, S> repository;
+    E extends GenericEntity<I>, I extends Serializable, D extends GenericDto> {
+  private final GenericRepository<E, I> repository;
   private final GenericMapper<E, D> mapper;
 
   /**
@@ -39,7 +39,7 @@ public abstract class GenericService<
    */
   public List<D> findAll() {
     return repository.findAll(Sort.by(Sort.Direction.ASC, EntityConstants.ID)).stream()
-        .map(this.mapper::toDto)
+        .map(mapper::toDto)
         .toList();
   }
 
@@ -50,7 +50,7 @@ public abstract class GenericService<
    * @return a list of DTOs representing all entities.
    */
   public List<D> findAll(Sort sort) {
-    return repository.findAll(sort).stream().map(this.mapper::toDto).toList();
+    return repository.findAll(sort).stream().map(mapper::toDto).toList();
   }
 
   /**
@@ -79,10 +79,10 @@ public abstract class GenericService<
    * @return the DTO corresponding to the entity.
    * @throws NotFoundException if the entity is not found.
    */
-  public D find(S id) {
+  public D find(I id) {
     return repository
         .findById(id)
-        .map(this.mapper::toDto)
+        .map(mapper::toDto)
         .orElseThrow(() -> new NotFoundException(ExceptionConstants.NOT_FOUND, id));
   }
 
@@ -93,7 +93,7 @@ public abstract class GenericService<
    * @return the entity.
    * @throws NotFoundException if the entity is not found.
    */
-  public E findEntity(S id) {
+  public E findEntity(I id) {
     return repository
         .findById(id)
         .orElseThrow(() -> new NotFoundException(ExceptionConstants.NOT_FOUND, id));
@@ -131,7 +131,7 @@ public abstract class GenericService<
    * @return the updated DTO.
    */
   @Transactional
-  public D update(S id, D dto) {
+  public D update(I id, D dto) {
     E entity = findEntity(id);
     mapper.updateEntity(dto, entity);
     return mapper.toDto(repository.save(entity));
@@ -143,7 +143,7 @@ public abstract class GenericService<
    * @param id the identifier of the entity to delete.
    */
   @Transactional
-  public void delete(S id) {
+  public void delete(I id) {
     repository.deleteById(id);
   }
 }
