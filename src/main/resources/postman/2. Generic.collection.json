@@ -1,0 +1,373 @@
+{
+	"info": {
+		"_postman_id": "b0f07dea-26ff-4e77-8688-9d09909dbb1e",
+		"name": "2. Generic",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23593847"
+	},
+	"item": [
+		{
+			"name": "Get Users",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-aei-called-service",
+						"value": "generic-security",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{securityUrl}}/users",
+					"host": [
+						"{{securityUrl}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User By Id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-aei-called-service",
+						"value": "generic-security",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{securityUrl}}/users/id/:id",
+					"host": [
+						"{{securityUrl}}"
+					],
+					"path": [
+						"users",
+						"id",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User By Code",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-aei-called-service",
+						"value": "generic-security",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{securityUrl}}/users/code/:code",
+					"host": [
+						"{{securityUrl}}"
+					],
+					"path": [
+						"users",
+						"code",
+						":code"
+					],
+					"variable": [
+						{
+							"key": "code",
+							"value": "5cc35df7-18b6-462a-8140-22b0db76c553"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User By Username",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-aei-called-service",
+						"value": "generic-security",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{securityUrl}}/users/:username",
+					"host": [
+						"{{securityUrl}}"
+					],
+					"path": [
+						"users",
+						":username"
+					],
+					"variable": [
+						{
+							"key": "username",
+							"value": "keit"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Save User",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-aei-called-service",
+						"value": "generic-security",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"code\": \"5cc35df7-18b6-462a-8140-22b0db76c553\",\r\n    \"username\": \"keit\",\r\n    \"name\": \"Alberto\",\r\n    \"surname1\": \"Barral\",\r\n    \"surname2\": \"Tigeras\",\r\n    \"email\": \"keit@keit.com\",\r\n    \"password\": null,\r\n    \"phone\": \"123456789\",\r\n    \"location\": null,\r\n    \"registrationDate\": \"29/12/2002 07:00:00\",\r\n    \"verificationToken\": null,\r\n    \"enabled\": true,\r\n    \"loginDate\": null,\r\n    \"loginAttempts\": 0,\r\n    \"banned\": false,\r\n    \"banDate\": null,\r\n    \"banReason\": null,\r\n    \"roles\": [\r\n        {\r\n            \"code\": \"AD\",\r\n            \"name\": \"Admin\"\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{securityUrl}}/users",
+					"host": [
+						"{{securityUrl}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-aei-called-service",
+						"value": "generic-security",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"code\": \"5cc35df7-18b6-462a-8140-22b0db76c553\",\r\n    \"username\": \"keit\",\r\n    \"name\": \"Alberto\",\r\n    \"surname1\": \"Barral\",\r\n    \"surname2\": \"Tigeras\",\r\n    \"email\": \"keit@keit.com\",\r\n    \"password\": null,\r\n    \"phone\": \"123456789\",\r\n    \"location\": null,\r\n    \"registrationDate\": \"29/12/2002 07:00:00\",\r\n    \"verificationToken\": null,\r\n    \"enabled\": true,\r\n    \"loginDate\": null,\r\n    \"loginAttempts\": 0,\r\n    \"banned\": false,\r\n    \"banDate\": null,\r\n    \"banReason\": null,\r\n    \"roles\": [\r\n        {\r\n            \"code\": \"AD\",\r\n            \"name\": \"Admin\"\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{securityUrl}}/users/id/:id/update",
+					"host": [
+						"{{securityUrl}}"
+					],
+					"path": [
+						"users",
+						"id",
+						":id",
+						"update"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-aei-called-service",
+						"value": "generic-security",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{securityUrl}}/users/id/:id",
+					"host": [
+						"{{securityUrl}}"
+					],
+					"path": [
+						"users",
+						"id",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Roles",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-aei-called-service",
+						"value": "generic-security",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{securityUrl}}/roles",
+					"host": [
+						"{{securityUrl}}"
+					],
+					"path": [
+						"roles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Role By Code",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-aei-called-service",
+						"value": "generic-security",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{securityUrl}}/roles/code/:code",
+					"host": [
+						"{{securityUrl}}"
+					],
+					"path": [
+						"roles",
+						"code",
+						":code"
+					],
+					"variable": [
+						{
+							"key": "code",
+							"value": "AD"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

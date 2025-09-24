@@ -1,0 +1,26 @@
+{
+	"id": "5441984a-75aa-426e-857c-4c06a17efa56",
+	"values": [
+		{
+			"key": "securityUrl",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "secret",
+			"enabled": true
+		},
+		{
+			"key": "refreshToken",
+			"value": "",
+			"type": "secret",
+			"enabled": true
+		}
+	],
+	"name": "Globals",
+	"_postman_variable_scope": "globals",
+	"_postman_exported_at": "2025-09-24T11:11:42.738Z",
+	"_postman_exported_using": "Postman/11.62.0"
+}

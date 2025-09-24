@@ -13,6 +13,6 @@ public class RandomUtil {
   public static String getRandomBase64EncodedString(int length) {
     byte[] responseHeader = new byte[length];
     RANDOM.nextBytes(responseHeader);
-    return Base64.getEncoder().encodeToString(responseHeader);
+    return Base64.getUrlEncoder().withoutPadding().encodeToString(responseHeader);
   }
 }

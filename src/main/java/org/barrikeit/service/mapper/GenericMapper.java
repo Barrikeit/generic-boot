@@ -1,7 +1,7 @@
 package org.barrikeit.service.mapper;
 
 import org.barrikeit.model.domain.GenericEntity;
-import org.barrikeit.service.dto.GenericDto;
+import org.barrikeit.rest.dto.GenericDto;
 import org.mapstruct.MappingTarget;
 
 /**
@@ -31,7 +31,7 @@ import org.mapstruct.MappingTarget;
  * @param <E> the entity class that extends the generic entity.
  * @param <D> the DTO class that extends the generic DTO.
  */
-public interface GenericMapper<E extends GenericEntity, D extends GenericDto> {
+public interface GenericMapper<E extends GenericEntity<?>, D extends GenericDto> {
 
   D toDto(E source);
 

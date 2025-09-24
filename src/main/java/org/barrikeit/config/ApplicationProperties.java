@@ -1,10 +1,9 @@
 package org.barrikeit.config;
 
-import java.util.Properties;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 /**
  * <b>Configuration Properties Class</b>
@@ -29,59 +28,60 @@ public class ApplicationProperties {
 
   @Getter
   @Setter
-  @Component
   @ConfigurationProperties(prefix = "application", ignoreUnknownFields = false)
   public static class GenericProperties {
     private String name;
     private String version;
-    private String module;
+    private String build;
+    private String buildTime;
   }
 
   @Getter
   @Setter
-  @Component
   @ConfigurationProperties(prefix = "server", ignoreUnknownFields = false)
   public static class ServerProperties {
     private int port;
-    private String contextPath;
-    private String apiPath;
+    private String timeZone;
     private String activeProfile;
-    private boolean forceResponse;
+    private ServletProperties servlet;
+
+    @Getter
+    @Setter
+    public static class ServletProperties {
+      private String contextPath;
+      private String apiPath;
+      private EncodingProperties encoding;
+
+      @Getter
+      @Setter
+      public static class EncodingProperties {
+        private String charset;
+        private boolean enabled;
+        private boolean force;
+        private boolean forceResponse;
+      }
+    }
   }
 
   @Getter
   @Setter
-  @Component
-  @ConfigurationProperties(prefix = "spring", ignoreUnknownFields = false)
-  public static class DatabaseProperties {
-    private String url;
-    private String driverClassName;
-    private String username;
-    private String password;
-    private String database;
-    private String dialect;
-    private String generateDdl;
-    private String openInView;
-    private String synonyms;
-    private String formatSql;
-    private String showSql;
-    private String defaultSchema;
-    private String hbm2ddlAuto;
-    private String importFiles;
-    private String generateStatistics;
-    private String enableLazyLoadNoTrans;
+  @ConfigurationProperties(prefix = "mail", ignoreUnknownFields = false)
+  public static class MailProperties {
+    private String host;
+    private int port;
+    private String user;
+    private String pass;
+    private String from;
+    private String activacionUrl;
+    private Properties properties;
 
-    public Properties properties() {
-      Properties properties = new Properties();
-      properties.put("hibernate.dialect", getDialect());
-      properties.put("hibernate.show_sql", getShowSql());
-      properties.put("hibernate.format_sql", getFormatSql());
-      properties.put("hibernate.hbm2ddl.auto", getHbm2ddlAuto());
-      properties.put("hibernate.hbm2ddl.import_files", getImportFiles());
-      properties.put("hibernate.generate_statistics", getGenerateStatistics());
-      properties.put("hibernate.jdbc.batch_size", "5");
-      properties.put("hibernate.default_batch_fetch_size", "10");
-      return properties;
+    @Getter
+    @Setter
+    public static class Properties {
+      private String protocol;
+      private String auth;
+      private String starttls;
+      private String debug;
     }
   }
 }

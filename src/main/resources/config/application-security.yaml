@@ -1,0 +1,19 @@
+security:
+  cors:
+    allowed:
+      methods: GET,HEAD,POST,PUT,DELETE
+      headers: "Authorization,content-type,x-aei-called-service"
+      origins: http://localhost:9891, http://localhost:4200
+    enabled: true
+    path:
+      pattern: /**
+  jwt:
+    issuer: keit
+    secret: keit_secret
+    expiration: 3600
+    expiration-refresh: 4500
+  app-validator-filter:
+    app-self-name: 'generic-security' # nombre del módulo que espera recibir
+    app-header-name-validation-Filter: true # habilita la validación de cabeceras
+    app-header-name: 'x-aei-called-service' # nombre de la cabecera que tiene el identificador
+    app-security-name: 'generic-security' # nombre del módulo de seguridad

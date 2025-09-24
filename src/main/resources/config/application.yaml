@@ -1,22 +1,42 @@
 application:
-  name: generic
-  version: 0.0.1
-  module: users
+  name: @app.name@
+  version: @app.version@
+  build: @app.build@
+  buildTime: @app.buildTime@
 
 server:
-  port: 9991
-  contextPath: /generic
-  apiPath: /api/*
+  port: 9891
   timeZone: Europe/Madrid
   servlet:
+    context-path: /generic
+    apiPath: /api/v1
     encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
       force-response: true
 
 spring:
+  application.name: generic
+  mvc.servlet.path: /api/v1
   profiles:
     active: @spring.profiles.active@
   config:
     import:
       - application-base.yaml
-      - optional:application-datasource.yaml
-      - application-@spring.profiles.active@.yaml
+      - application-flyway.yaml
+      - application-security.yaml
+      - optional:application-@spring.profiles.active@.yaml
+
+springdoc:
+  api-docs.path: /openapi/api-docs
+  packagesToScan: org.barrikeit.rest
+  show-actuator: false
+  swagger-ui:
+    display-request-duration: true
+    filter: true
+    operations-sorter: method
+    path: /openapi/swagger-ui
+    use-root-path: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
