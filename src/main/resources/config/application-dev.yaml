@@ -1,6 +1,8 @@
 application:
-#  name: generic-dev
-#  version: 0.0.1-ALPHA
+  name: generic-dev
+  version: 0.0.1-Alpha
+  build: 0
+  buildTime: 0
 
 spring:
   config:

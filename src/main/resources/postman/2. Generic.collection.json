@@ -177,11 +177,6 @@
 				"method": "POST",
 				"header": [
 					{
-						"key": "accept",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
 						"key": "x-aei-called-service",
 						"value": "generic-security",
 						"type": "text"
@@ -189,7 +184,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"prueba\",\r\n    \"password\": \"1234\",\r\n    \"email\": \"prueba@prueba.com\",\r\n    \"enabled\": false,\r\n    \"banned\": false,\r\n    \"banDate\": null,\r\n    \"loginDate\": null,\r\n    \"loginAttempts\": 0,\r\n    \"roles\": [\r\n        {\r\n            \"code\": \"AD\",\r\n            \"name\": \"Admin\"\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"code\": \"5cc35df7-18b6-462a-8140-22b0db76c553\",\r\n    \"username\": \"keit\",\r\n    \"name\": \"Alberto\",\r\n    \"surname1\": \"Barral\",\r\n    \"surname2\": \"Tigeras\",\r\n    \"email\": \"keit@keit.com\",\r\n    \"password\": null,\r\n    \"phone\": \"123456789\",\r\n    \"location\": null,\r\n    \"registrationDate\": \"29/12/2002 07:00:00\",\r\n    \"verificationToken\": null,\r\n    \"enabled\": true,\r\n    \"loginDate\": null,\r\n    \"loginAttempts\": 0,\r\n    \"banned\": false,\r\n    \"banDate\": null,\r\n    \"banReason\": null,\r\n    \"roles\": [\r\n        {\r\n            \"code\": \"AD\",\r\n            \"name\": \"Admin\"\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -231,7 +226,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"prueba\",\r\n    \"password\": null,\r\n    \"email\": \"prueba@prueba.com\",\r\n    \"enabled\": true,\r\n    \"banned\": false,\r\n    \"banDate\": null,\r\n    \"loginDate\": null,\r\n    \"loginAttempts\": 0,\r\n    \"roles\": [\r\n        {\r\n            \"code\": \"AD\",\r\n            \"name\": \"Admin\"\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"code\": \"5cc35df7-18b6-462a-8140-22b0db76c553\",\r\n    \"username\": \"keit\",\r\n    \"name\": \"Alberto\",\r\n    \"surname1\": \"Barral\",\r\n    \"surname2\": \"Tigeras\",\r\n    \"email\": \"keit@keit.com\",\r\n    \"password\": null,\r\n    \"phone\": \"123456789\",\r\n    \"location\": null,\r\n    \"registrationDate\": \"29/12/2002 07:00:00\",\r\n    \"verificationToken\": null,\r\n    \"enabled\": true,\r\n    \"loginDate\": null,\r\n    \"loginAttempts\": 0,\r\n    \"banned\": false,\r\n    \"banDate\": null,\r\n    \"banReason\": null,\r\n    \"roles\": [\r\n        {\r\n            \"code\": \"AD\",\r\n            \"name\": \"Admin\"\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -252,7 +247,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "8"
+							"value": "1"
 						}
 					]
 				}
@@ -293,7 +288,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "8"
+							"value": "1"
 						}
 					]
 				}

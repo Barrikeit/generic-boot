@@ -40,11 +40,6 @@
 				"method": "POST",
 				"header": [
 					{
-						"key": "accept",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
 						"key": "x-aei-called-service",
 						"value": "generic-security",
 						"type": "text"
@@ -79,7 +74,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							""
+							"var responseData = JSON.parse(pm.response.text()).content;\r",
+							"pm.environment.set(\"verificationToken\", responseData);"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -99,11 +95,6 @@
 			"request": {
 				"method": "POST",
 				"header": [
-					{
-						"key": "accept",
-						"value": "application/json",
-						"type": "text"
-					},
 					{
 						"key": "x-aei-called-service",
 						"value": "generic-security",
@@ -139,7 +130,7 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							""
+							"pm.environment.set(\"verificationToken\", null);"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -160,11 +151,6 @@
 				"method": "PUT",
 				"header": [
 					{
-						"key": "accept",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
 						"key": "x-aei-called-service",
 						"value": "generic-security",
 						"type": "text"
@@ -172,7 +158,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"prueba\",\r\n    \"email\": \"prueba@prueba.com\",\r\n    \"password\": \"1234\"\r\n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -180,7 +166,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}{{port}}{{apiVersion}}/auth/verify?t=1G/LrtGsPOH0GfNdAJ8=",
+					"raw": "{{baseUrl}}{{port}}{{apiVersion}}/auth/verify?t={{verificationToken}}",
 					"host": [
 						"{{baseUrl}}{{port}}{{apiVersion}}"
 					],
@@ -191,7 +177,7 @@
 					"query": [
 						{
 							"key": "t",
-							"value": "1G/LrtGsPOH0GfNdAJ8="
+							"value": "{{verificationToken}}"
 						}
 					]
 				}
@@ -229,11 +215,6 @@
 			"request": {
 				"method": "POST",
 				"header": [
-					{
-						"key": "accept",
-						"value": "application/json",
-						"type": "text"
-					},
 					{
 						"key": "x-aei-called-service",
 						"value": "generic-security",
@@ -291,11 +272,6 @@
 				"method": "POST",
 				"header": [
 					{
-						"key": "accept",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
 						"key": "x-aei-called-service",
 						"value": "generic-security",
 						"type": "text"
@@ -330,9 +306,7 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"var responseData = JSON.parse(responseBody);\r",
-							"pm.globals.set(\"authToken\", responseData.jwt);\r",
-							"pm.globals.set(\"refreshToken\", responseData.refreshToken);"
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -342,9 +316,7 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
-							"var requestBody = JSON.parse(pm.request.body);\r",
-							"pm.environment.set(\"username\", requestBody.username);\r",
-							"pm.environment.set(\"password\", requestBody.password);"
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -358,11 +330,6 @@
 				"method": "GET",
 				"header": [
 					{
-						"key": "accept",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
 						"key": "x-aei-called-service",
 						"value": "generic-security",
 						"type": "text"
@@ -370,7 +337,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"prueba\",\r\n    \"password\": \"1234\"\r\n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
