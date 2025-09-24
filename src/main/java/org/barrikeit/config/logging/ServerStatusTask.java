@@ -1,4 +1,4 @@
-package org.barrikeit.config;
+package org.barrikeit.config.logging;
 
 import java.io.File;
 import java.sql.Connection;

@@ -1,4 +1,4 @@
-package org.barrikeit.config;
+package org.barrikeit.config.logging;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
