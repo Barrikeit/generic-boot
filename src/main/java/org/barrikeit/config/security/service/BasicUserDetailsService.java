@@ -64,7 +64,7 @@ public class BasicUserDetailsService {
                 .password(registerDto.getPassword())
                 .roles(Set.of(RoleDto.builder().code("US").build()))
                 .build());
-    return dto.getVerificationToken();
+    return URLEncoder.encode(dto.getVerificationToken(), StandardCharsets.UTF_8);
   }
 
   public void verify(final String verificationToken) {
