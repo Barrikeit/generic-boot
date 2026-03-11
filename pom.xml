@@ -10,38 +10,32 @@
     <packaging>war</packaging>
 
     <properties>
-        <!-- VERSIONES -->
-        <app.version>0.0.1</app.version>
+        <!-- Project -->
         <java.version>21</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- Spring Boot -->
-        <spring-boot.version>3.4.1</spring-boot.version>
         <!-- Spring -->
-        <spring.version>6.2.0</spring.version>
-        <spring-data.version>3.4.0</spring-data.version>
-        <spring-security.version>6.4.4</spring-security.version>
-        <spring-session.version>3.4.0</spring-session.version>
+        <spring-boot.version>3.4.1</spring-boot.version>
         <spring-doc.version>2.6.0</spring-doc.version>
-        <!-- security -->
-        <jwt.version>4.4.0</jwt.version>
-        <!-- Lombok y Logs -->
+
+        <!-- Security -->
+        <jwt.version>0.13.0</jwt.version>
+
+        <!-- Logs -->
+        <log4j2.version>2.25.3</log4j2.version>
+
+        <!-- Lombok / MapStruct -->
         <lombok.version>1.18.34</lombok.version>
-        <log4j-slf4j2.version>2.24.3</log4j-slf4j2.version>
-        <!-- Mappers -->
         <mapstruct.version>1.6.2</mapstruct.version>
-        <!-- Hibernate, JDBC drivers, Hikari y Flyway -->
-        <hibernate.version>6.6.0.Final</hibernate.version>
-        <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
+        <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
+
+        <!-- Database drivers -->
+        <postgresql.version>42.7.7</postgresql.version>
         <h2.version>2.3.232</h2.version>
-        <postgresql.version>42.7.4</postgresql.version>
-        <hikari.version>6.0.0</hikari.version>
-        <flyway.version>11.1.0</flyway.version>
 
-        <jakarta-servlet.version>6.1.0</jakarta-servlet.version>
+        <!-- Utils / IO -->
         <jsoup.version>1.18.1</jsoup.version>
-
         <commons-io.version>2.18.0</commons-io.version>
-        <jackson.version>2.18.2</jackson.version>
         <apache-poi.version>5.4.0</apache-poi.version>
         <jackcess.version>4.0.7</jackcess.version>
         <pdfbox.version>3.0.3</pdfbox.version>
@@ -49,18 +43,35 @@
         <!-- dependencias solo de plugins -->
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <!-- plugins -->
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
-        <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
-        <maven-buildnumber-plugin.version>3.2.1</maven-buildnumber-plugin.version>
+        <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
+        <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
+        <maven-war-plugin.version>3.5.0</maven-war-plugin.version>
+        <maven-build-metadata-plugin.version>0.0.1</maven-build-metadata-plugin.version>
+        <maven-resources-plugin.version>3.4.0</maven-resources-plugin.version>
+        <spring-banner-plugin.version>1.6.0</spring-banner-plugin.version>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
-        <!-- Spring Boot -->
+        <!-- log4j-core y log4j-slf4j2-impl obtained from spring-boot -->
+        <!-- hibernate-core y hibernate-validator obtained from spring-boot -->
+        <!-- HikariCP obtained from spring-boot -->
+        <!-- jackson-databind obtained from spring-boot -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-            <version>${spring-boot.version}</version>
+            <artifactId>spring-boot-starter-web</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
@@ -70,93 +81,58 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <version>${spring-boot.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <version>${spring-boot.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
-            <version>${spring-boot.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
-            <version>${spring-boot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-            <version>${spring-boot.version}</version>
         </dependency>
+
+        <!-- Logs -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
-            <version>${spring-boot.version}</version>
         </dependency>
-        <!-- Spring -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jpa</artifactId>
-            <version>${spring-data.version}</version>
-        </dependency>
-        <!-- spring doc / swaggerUI endpoint documentation -->
+
+        <!-- SpringDoc / SwaggerUI endpoint documentation -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${spring-doc.version}</version>
         </dependency>
 
-        <!-- security -->
+        <!-- Security -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-            <version>${spring-boot.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-            <version>${spring-boot.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-core</artifactId>
-            <version>${spring-security.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-config</artifactId>
-            <version>${spring-security.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.session</groupId>
-            <artifactId>spring-session-jdbc</artifactId>
-            <version>${spring-session.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
             <version>${jwt.version}</version>
         </dependency>
-
-        <!-- Jakarta Servlet Api -->
         <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
-            <version>${jakarta-servlet.version}</version>
-            <scope>provided</scope>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson if Gson is preferred -->
+            <version>${jwt.version}</version>
+            <scope>runtime</scope>
         </dependency>
 
-        <!-- Lombok y Logs -->
+        <!-- Lombok / Mapstruct -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -164,36 +140,17 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j-slf4j2.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j2-impl</artifactId>
-            <version>${log4j-slf4j2.version}</version>
-        </dependency>
-
-        <!-- Mappers -->
-        <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
         </dependency>
 
-        <!-- Hibernate -->
+        <!-- Driver JDBC (PostgreSQL, H2) -->
         <dependency>
-            <groupId>org.hibernate.orm</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${hibernate.version}</version>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>${hibernate-validator.version}</version>
-        </dependency>
-
-        <!-- Driver JDBC (H2, PostgreSQL) -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -201,23 +158,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgresql.version}</version>
-        </dependency>
-
-        <!-- Hikari pool para manejar la pool de conexiones a la bbdd-->
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>${hikari.version}</version>
-        </dependency>
-
-        <!-- Flyway migraciones de la bbdd -->
-        <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
-            <version>${flyway.version}</version>
         </dependency>
 
         <!-- Jsoup -->
@@ -233,13 +175,8 @@
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
         </dependency>
-        <!-- XML, YAML Files -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <!-- Dependencia poi para leer, escribir y modificar archivos Microsoft Office (.xls/.xlsx, .doc/.docx, .ppt) -->
+
+        <!-- Dependencia poi para leer, escribir y modificar archivos Microsoft Office (.xls, .doc, .ppt) -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
@@ -331,34 +268,37 @@
             </plugin>
             <!-- build metadata plugin -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>${maven-buildnumber-plugin.version}</version>
+                <groupId>org.barrikeit.maven</groupId>
+                <artifactId>build-metadata-maven-plugin</artifactId>
+                <version>${maven-build-metadata-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>generate-build-metadata</id>
-                        <phase>validate</phase>
+                        <phase>initialize</phase>
                         <goals>
-                            <goal>create-metadata</goal>
+                            <goal>generate-build-metadata</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <!-- create file on resources -->
-                    <addOutputDirectoryToResources>true</addOutputDirectoryToResources>
-                    <outputDirectory>${project.build.directory}/generated-sources/build-metadata</outputDirectory>
-                    <outputName>build.properties</outputName>
-                    <!-- metadata -->
-                    <applicationName>${project.build.finalName}</applicationName>
-                    <applicationPropertyName>app.name</applicationPropertyName>
-                    <version>${project.version}</version>
-                    <versionPropertyName>app.version</versionPropertyName>
-                    <ignoreEmptyScmUrl>true</ignoreEmptyScmUrl>
-                    <revisionOnScmFailure>0</revisionOnScmFailure>
-                    <shortRevisionLength>7</shortRevisionLength>
-                    <revisionPropertyName>app.build</revisionPropertyName>
-                    <timestampFormat>yyyyMMddHHmmss</timestampFormat>
-                    <timestampPropertyName>app.buildTime</timestampPropertyName>
+                    <!-- Optional overrides -->
+                    <appName>${project.build.finalName}</appName>
+                    <appVersion>${project.version}</appVersion>
+
+                    <!-- Property names -->
+                    <buildIdProperty>app.build</buildIdProperty>
+                    <buildTimestampProperty>app.buildTime</buildTimestampProperty>
+                    <appNameProperty>app.name</appNameProperty>
+                    <appVersionProperty>app.version</appVersionProperty>
+
+                    <!-- Format options -->
+                    <buildIdLength>20</buildIdLength>
+                    <buildTimestampFormat>${maven.build.timestamp.format}</buildTimestampFormat>
+
+                    <!-- Output file -->
+                    <generateFile>true</generateFile>
+                    <fileDirectory>${project.build.directory}/generated-sources/build-metadata</fileDirectory>
+                    <fileName>build.properties</fileName>
                 </configuration>
             </plugin>
             <!-- filter resources plugin -->
@@ -395,7 +335,7 @@
             <plugin>
                 <groupId>ch.acanda.maven</groupId>
                 <artifactId>spring-banner-plugin</artifactId>
-                <version>1.6.0</version>
+                <version>${spring-banner-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>generate-spring-banner</id>
@@ -406,8 +346,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <text>${application.name}</text>
-                    <info>Version: ${application.version} (${application.build})</info>
+                    <text>${banner.name}</text>
+                    <info>Version: ${banner.version} (${banner.build})</info>
                     <font>standard</font>
                     <color>default</color>
                 </configuration>
@@ -428,7 +368,10 @@
                 <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss</maven.build.timestamp.format>
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
                 <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-                <resource.delimiter>@</resource.delimiter>
+                <spring.profiles.active>default</spring.profiles.active>
+                <banner.name>${app.name}</banner.name>
+                <banner.version>${app.version}</banner.version>
+                <banner.build>${app.build}</banner.build>
             </properties>
         </profile>
         <profile>
