@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.barrikeit.model.domain.base.GenericCodeEntity;
 import org.barrikeit.util.constants.EntityConstants;
 
 @SuperBuilder(toBuilder = true)
@@ -67,7 +68,10 @@ public class User extends GenericCodeEntity<Long, UUID> {
   @JoinColumn(name = "id_location", referencedColumnName = "id_location")
   private Location location;
 
-  @Column(name = "registration_date", columnDefinition = "TIMESTAMP WITH TIME ZONE")
+  @Column(
+      name = "registration_date",
+      nullable = false,
+      columnDefinition = EntityConstants.DATE_COLUMN_DEFINITION)
   private LocalDateTime registrationDate;
 
   @Size(max = 20)
@@ -77,7 +81,7 @@ public class User extends GenericCodeEntity<Long, UUID> {
   @Column(name = "enabled", nullable = false)
   private boolean enabled = false;
 
-  @Column(name = "login_date", columnDefinition = "TIMESTAMP WITH TIME ZONE")
+  @Column(name = "login_date", columnDefinition = EntityConstants.DATE_COLUMN_DEFINITION)
   private LocalDateTime loginDate;
 
   @NotNull
@@ -88,7 +92,7 @@ public class User extends GenericCodeEntity<Long, UUID> {
   @Column(name = "banned", nullable = false)
   private boolean banned = false;
 
-  @Column(name = "ban_date", columnDefinition = "TIMESTAMP WITH TIME ZONE")
+  @Column(name = "ban_date", columnDefinition = EntityConstants.DATE_COLUMN_DEFINITION)
   private LocalDateTime banDate;
 
   @Size(max = 255)

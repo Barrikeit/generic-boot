@@ -1,7 +1,8 @@
 package org.barrikeit.service.mapper;
 
 import org.barrikeit.model.domain.User;
-import org.barrikeit.rest.dto.UserDto;
+import org.barrikeit.service.dto.UserDto;
+import org.barrikeit.service.mapper.base.BaseMapper;
 import org.mapstruct.*;
 
 @Mapper(
@@ -9,7 +10,7 @@ import org.mapstruct.*;
     injectionStrategy = InjectionStrategy.CONSTRUCTOR,
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
     uses = {RoleMapper.class, LocationMapper.class})
-public interface UserMapper extends GenericMapper<User, UserDto> {
+public interface UserMapper extends BaseMapper<User, UserDto> {
 
   User toEntity(UserDto source);
 

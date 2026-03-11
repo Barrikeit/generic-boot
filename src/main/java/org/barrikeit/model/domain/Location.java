@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.barrikeit.model.domain.base.GenericCodeEntity;
 import org.barrikeit.util.constants.EntityConstants;
 
 @Getter
