@@ -63,8 +63,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
   @Bean
   public MessageSource messageSource() {
     ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-    messageSource.addBasenames(
-        "i18n/messages", "i18n/messagesService", "i18n/errors", "i18n/errorsService");
+    messageSource.addBasenames("i18n/messages", "i18n/errors");
     messageSource.setCacheSeconds(300);
     messageSource.setDefaultEncoding("UTF-8");
     messageSource.setDefaultLocale(Locale.of("es", "ES"));
