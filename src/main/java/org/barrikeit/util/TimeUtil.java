@@ -15,11 +15,6 @@ public class TimeUtil {
 
   private static String zone;
 
-  @Value("${server.timeZone}")
-  public void setZoneStatic(String zone) {
-    TimeUtil.zone = zone;
-  }
-
   public static Instant instantNow() {
     return Instant.now().atZone(ZoneId.of(zone)).toInstant();
   }
@@ -34,6 +29,13 @@ public class TimeUtil {
 
   public static LocalDateTime localDateTimeNow() {
     return instantNow().atZone(ZoneId.of(zone)).toLocalDateTime();
+  }
+
+  public static LocalDateTime toLocalDateTime(Date date) {
+    if (date == null) {
+      return null;
+    }
+    return date.toInstant().atZone(ZoneId.of(zone)).toLocalDateTime();
   }
 
   public static LocalDate convertLocalDate(String date) {
@@ -77,5 +79,10 @@ public class TimeUtil {
     DateTimeFormatter dateTimeFormatter =
         DateTimeFormatter.ofPattern(UtilConstants.PATTERN_DATE_TIME_DOWNLOAD);
     return date.format(dateTimeFormatter);
+  }
+
+  @Value("${server.timeZone}")
+  public void setZoneStatic(String zone) {
+    TimeUtil.zone = zone;
   }
 }

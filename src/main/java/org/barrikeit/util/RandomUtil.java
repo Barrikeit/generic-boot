@@ -4,11 +4,11 @@ import java.util.Base64;
 import java.util.Random;
 
 public class RandomUtil {
+  private static final Random RANDOM = new Random();
+
   private RandomUtil() {
     throw new IllegalStateException("RandomUtil class");
   }
-
-  private static final Random RANDOM = new Random();
 
   public static String getRandomBase64EncodedString(int length) {
     byte[] responseHeader = new byte[length];

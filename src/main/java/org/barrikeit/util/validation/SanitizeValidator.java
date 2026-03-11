@@ -5,7 +5,6 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
-
 public class SanitizeValidator implements ConstraintValidator<Sanitize, String> {
 
   @Override

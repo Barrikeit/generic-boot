@@ -1,18 +1,11 @@
 package org.barrikeit.util;
 
-import static org.barrikeit.util.TimeUtil.convertLocalDate;
-import static org.barrikeit.util.TimeUtil.convertLocalDateTime;
-
 import jakarta.persistence.Transient;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,12 +14,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.reflect.MethodUtils;
-import org.barrikeit.model.domain.GenericEntity;
-import org.barrikeit.rest.dto.GenericDto;
+import org.barrikeit.model.domain.base.GenericEntity;
+import org.barrikeit.service.dto.base.BaseDto;
 import org.barrikeit.util.constants.ExceptionConstants;
 import org.barrikeit.util.exceptions.FieldValueException;
 import org.barrikeit.util.exceptions.NotFoundException;
-import org.barrikeit.util.exceptions.UnExpectedException;
 import org.springframework.util.ReflectionUtils;
 
 @Log4j2
@@ -231,7 +223,7 @@ public class ReflectionUtil extends ReflectionUtils {
         .flatMap(
             field -> {
               String fullFieldName = buildFullFieldName(prefix, field.getName());
-              if (isEntityOrDto(field.getDeclaringClass())) {
+              if (ObjectUtil.isEntityOrDto(field.getDeclaringClass())) {
                 return getNestedFields(field.getType(), fullFieldName).entrySet().stream();
               } else {
                 return Stream.of(Map.entry(fullFieldName, field));
@@ -303,7 +295,7 @@ public class ReflectionUtil extends ReflectionUtils {
         .flatMap(
             field -> {
               String fullFieldName = buildFullFieldName(fieldName, field.getName());
-              if (isEntityOrDto(field.getDeclaringClass())) {
+              if (ObjectUtil.isEntityOrDto(field.getDeclaringClass())) {
                 return getAnnotatedNestedFields(
                     field.getDeclaringClass(), annotation, fullFieldName)
                     .entrySet()
@@ -367,7 +359,7 @@ public class ReflectionUtil extends ReflectionUtils {
       }
 
       Class<?> type = value.getClass();
-      if (isEntityOrDto(type)) {
+      if (ObjectUtil.isEntityOrDto(type)) {
         Map<String, Field> nestedFields = getNestedFields(value.getClass(), fieldName);
         values.putAll(getMapFieldValues(value, nestedFields));
       } else if (type.isArray() || Collection.class.isAssignableFrom(type)) {
@@ -377,9 +369,9 @@ public class ReflectionUtil extends ReflectionUtils {
         for (Object item : collection) {
           if (item == null) continue;
           String indexedPrefix = fieldName + ".[" + index + "]";
-          if (isSimpleType(item.getClass())) {
+          if (ObjectUtil.isSimpleType(item.getClass())) {
             values.put(indexedPrefix, item);
-          } else if (isEntityOrDto(item.getClass())) {
+          } else if (ObjectUtil.isEntityOrDto(item.getClass())) {
             Map<String, Field> nestedFields = getNestedFields(item.getClass(), indexedPrefix);
             values.putAll(getMapFieldValues(item, nestedFields));
           } else {
@@ -396,9 +388,9 @@ public class ReflectionUtil extends ReflectionUtils {
           Object val = mapEntry.getValue();
           String mappedPrefix = fieldName + ".[" + key + "]";
           if (val == null) continue;
-          if (isSimpleType(val.getClass())) {
+          if (ObjectUtil.isSimpleType(val.getClass())) {
             values.put(mappedPrefix, val);
-          } else if (isEntityOrDto(val.getClass())) {
+          } else if (ObjectUtil.isEntityOrDto(val.getClass())) {
             Map<String, Field> nestedFields = getNestedFields(val.getClass(), mappedPrefix);
             values.putAll(getMapFieldValues(val, nestedFields));
           } else {
@@ -437,7 +429,7 @@ public class ReflectionUtil extends ReflectionUtils {
         continue;
       }
       Class<?> type = value.getClass();
-      if (GenericEntity.class.isAssignableFrom(type) || GenericDto.class.isAssignableFrom(type)) {
+      if (GenericEntity.class.isAssignableFrom(type) || BaseDto.class.isAssignableFrom(type)) {
         values.putAll(getNestedFieldValues(value, fieldName));
       } else if (type.isArray() || Collection.class.isAssignableFrom(type)) {
         Collection<?> collection =
@@ -447,7 +439,7 @@ public class ReflectionUtil extends ReflectionUtils {
           int index = 0;
           for (Object item : collection) {
             String indexedPrefix = fieldName + ".[" + index + "]";
-            if (isSimpleType(item.getClass())) {
+            if (ObjectUtil.isSimpleType(item.getClass())) {
               values.put(indexedPrefix, item);
             } else {
               values.putAll(getNestedFieldValues(item, indexedPrefix));
@@ -462,7 +454,7 @@ public class ReflectionUtil extends ReflectionUtils {
           String key = String.valueOf(mapEntry.getKey());
           Object item = mapEntry.getValue();
           String mappedPrefix = fieldName + ".[" + key + "]";
-          if (isSimpleType(item.getClass())) {
+          if (ObjectUtil.isSimpleType(item.getClass())) {
             values.put(mappedPrefix, item);
           } else {
             values.putAll(getNestedFieldValues(item, mappedPrefix));
@@ -478,66 +470,5 @@ public class ReflectionUtil extends ReflectionUtils {
 
   private static String buildFullFieldName(String parent, String child) {
     return (parent == null || parent.isBlank()) ? child : parent + "." + child;
-  }
-
-  private static boolean isEntityOrDto(Class<?> clazz) {
-    return GenericEntity.class.isAssignableFrom(clazz) || GenericDto.class.isAssignableFrom(clazz);
-  }
-
-  private static boolean isSimpleType(Class<?> type) {
-    return type.isPrimitive()
-        || type.isEnum()
-        || type.equals(String.class)
-        || Number.class.isAssignableFrom(type)
-        || Boolean.class.isAssignableFrom(type)
-        || Date.class.isAssignableFrom(type)
-        || type.equals(LocalDate.class)
-        || type.equals(LocalDateTime.class);
-  }
-
-  /**
-   * Convierte un valor al tipo especificado, realizando las transformaciones necesarias.
-   *
-   * @param value El valor a convertir.
-   * @param targetType La clase del tipo al cual se desea convertir el valor.
-   * @param <M> El tipo genérico al cual se realiza la conversión.
-   * @return El valor convertido al tipo especificado, o `null` si el valor original es `null`.
-   * @throws UnExpectedException Si ocurre un error en la conversión o si el tipo no es soportado.
-   */
-  @SuppressWarnings("unchecked")
-  public static <M> M castFieldToType(Object value, Class<M> targetType) {
-    try {
-      if (value == null) {
-        return null;
-      } else if (targetType.isInstance(value)) {
-        return (M) value;
-      } else if (targetType.equals(String.class)) {
-        return (M) value.toString();
-      } else if (targetType.equals(Integer.class) || targetType.equals(int.class)) {
-        return (M) Integer.valueOf(value.toString());
-      } else if (targetType.equals(Long.class) || targetType.equals(long.class)) {
-        return (M) Long.valueOf(value.toString());
-      } else if (targetType.equals(Float.class) || targetType.equals(float.class)) {
-        return (M) Float.valueOf(value.toString());
-      } else if (targetType.equals(Double.class) || targetType.equals(double.class)) {
-        return (M) Double.valueOf(value.toString());
-      } else if (targetType.equals(BigDecimal.class)) {
-        if (value instanceof String string) return (M) new BigDecimal(string);
-        if (value instanceof Long l) return (M) BigDecimal.valueOf(l);
-        if (value instanceof Double d) return (M) BigDecimal.valueOf(d);
-      } else if (targetType.equals(Boolean.class) || targetType.equals(boolean.class)) {
-        if (value instanceof String string) return (M) Boolean.valueOf(string);
-      } else if (targetType.equals(LocalDate.class)) {
-        if (value instanceof String string) return (M) convertLocalDate(string);
-        if (value instanceof LocalDateTime date) return (M) date.toLocalDate();
-      } else if (targetType.equals(LocalDateTime.class)) {
-        if (value instanceof String string) return (M) convertLocalDateTime(string);
-        if (value instanceof LocalDate date) return (M) date.atStartOfDay();
-      }
-    } catch (Exception e) {
-      throw new UnExpectedException(
-          "Failed to cast value: {} to type: {}", value, targetType.getName());
-    }
-    throw new UnExpectedException("Unsupported cast type: {}", targetType.getName());
   }
 }
