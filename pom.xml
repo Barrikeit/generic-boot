@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.barrikeit</groupId>
+    <groupId>dev.barrikeit</groupId>
     <artifactId>generic-boot</artifactId>
     <version>0.0.1</version>
     <packaging>war</packaging>
@@ -46,7 +46,7 @@
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
         <maven-war-plugin.version>3.5.0</maven-war-plugin.version>
-        <maven-build-metadata-plugin.version>0.0.1</maven-build-metadata-plugin.version>
+        <maven-build-metadata-plugin.version>1.0.0</maven-build-metadata-plugin.version>
         <maven-resources-plugin.version>3.4.0</maven-resources-plugin.version>
         <spring-banner-plugin.version>1.6.0</spring-banner-plugin.version>
     </properties>
@@ -268,7 +268,7 @@
             </plugin>
             <!-- build metadata plugin -->
             <plugin>
-                <groupId>org.barrikeit.maven</groupId>
+                <groupId>dev.barrikeit.maven</groupId>
                 <artifactId>build-metadata-maven-plugin</artifactId>
                 <version>${maven-build-metadata-plugin.version}</version>
                 <executions>
