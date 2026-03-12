@@ -28,6 +28,10 @@ spring:
       - application-security.yaml
       - optional:application-@spring.profiles.active@.yaml
 
+logging:
+  file:
+    path: dist/logs
+
 springdoc:
   api-docs.path: /openapi/api-docs
   packagesToScan: org.barrikeit.rest

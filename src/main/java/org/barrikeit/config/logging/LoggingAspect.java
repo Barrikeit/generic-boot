@@ -8,7 +8,6 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.barrikeit.util.constants.ConfigurationConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
@@ -62,21 +61,13 @@ public class LoggingAspect {
    */
   @AfterThrowing(pointcut = "applicationPackagePointcut() && springBeanPointcut()", throwing = "e")
   public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
-    if (env.matchesProfiles(ConfigurationConstants.SPRING_PROFILE_DEVELOPMENT)) {
-      logger(joinPoint)
-          .error(
-              "Exception in {}() with cause = '{}' and exception = '{}'",
-              joinPoint.getSignature().getName(),
-              e.getCause() != null ? e.getCause() : "NULL",
-              e.getMessage(),
-              e);
-    } else {
-      logger(joinPoint)
-          .error(
-              "Exception in {}() with cause = {}",
-              joinPoint.getSignature().getName(),
-              e.getCause() != null ? e.getCause() : "NULL");
-    }
+    logger(joinPoint)
+        .error(
+            "Exception in {}() with cause = '{}' and exception = '{}'",
+            joinPoint.getSignature().getName(),
+            e.getCause() != null ? e.getCause() : "NULL",
+            e.getMessage(),
+            e);
   }
 
   /**
