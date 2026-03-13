@@ -1,7 +1,6 @@
 package dev.barrikeit.security.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dev.barrikeit.model.domain.User;
 import java.io.Serial;
 import java.util.Collection;
 import java.util.List;
@@ -11,12 +10,7 @@ import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-/**
- * Security-only representation of an authenticated user.
- *
- * <p>This class intentionally does NOT expose the domain {@link User} to avoid coupling the
- * security module with the persistence layer.
- */
+/** Security-only representation of an authenticated user. */
 @Getter
 public class BasicUserDetails implements UserDetails {
 
@@ -30,14 +24,18 @@ public class BasicUserDetails implements UserDetails {
   private final Collection<? extends GrantedAuthority> authorities;
 
   public BasicUserDetails(
-      User user,
+      UUID code,
+      String username,
+      String password,
+      boolean enabled,
+      boolean banned,
       List<? extends GrantedAuthority> roles,
       List<? extends GrantedAuthority> authorities) {
-    this.code = user.getCode();
-    this.username = user.getUsername();
-    this.password = user.getPassword();
-    this.enabled = user.isEnabled();
-    this.banned = user.isBanned();
+    this.code = code;
+    this.username = username;
+    this.password = password;
+    this.enabled = enabled;
+    this.banned = banned;
     this.roles = roles;
     this.authorities = authorities;
   }

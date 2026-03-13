@@ -54,7 +54,14 @@ public class BasicUserDetailsService {
 
   public BasicUserDetails loadUser(final String username) throws NotFoundException {
     User user = findByUsername(username);
-    return new BasicUserDetails(user, getRoles(user), getAuthorities(user));
+    return new BasicUserDetails(
+        user.getCode(),
+        user.getUsername(),
+        user.getPassword(),
+        user.isEnabled(),
+        user.isBanned(),
+        getRoles(user),
+        getAuthorities(user));
   }
 
   public BasicUserDetails loadUserByCode(UUID userCode) {
@@ -62,7 +69,14 @@ public class BasicUserDetailsService {
         repository
             .findByCode(userCode)
             .orElseThrow(() -> new NotFoundException(ExceptionConstants.ERROR_NOT_FOUND, userCode));
-    return new BasicUserDetails(user, getRoles(user), getAuthorities(user));
+    return new BasicUserDetails(
+        user.getCode(),
+        user.getUsername(),
+        user.getPassword(),
+        user.isEnabled(),
+        user.isBanned(),
+        getRoles(user),
+        getAuthorities(user));
   }
 
   public UsernamePasswordAuthenticationToken authenticate(final UserDto dto)
@@ -76,7 +90,14 @@ public class BasicUserDetailsService {
         throw new NotFoundException(ExceptionConstants.ERROR_NOT_FOUND, username);
       }
       return new UsernamePasswordAuthenticationToken(
-          new BasicUserDetails(user, getRoles(user), getAuthorities(user)),
+          new BasicUserDetails(
+              user.getCode(),
+              user.getUsername(),
+              user.getPassword(),
+              user.isEnabled(),
+              user.isBanned(),
+              getRoles(user),
+              getAuthorities(user)),
           dto.getPassword(),
           new ArrayList<>());
     } catch (NotFoundException e) {

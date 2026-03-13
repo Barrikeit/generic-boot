@@ -1,4 +1,4 @@
-package dev.barrikeit.util;
+package dev.barrikeit.security.util;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

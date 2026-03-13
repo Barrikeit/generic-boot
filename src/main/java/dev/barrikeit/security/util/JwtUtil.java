@@ -2,7 +2,6 @@ package dev.barrikeit.security.util;
 
 import dev.barrikeit.security.config.SecurityProperties;
 import dev.barrikeit.security.model.domain.BasicUserDetails;
-import dev.barrikeit.util.HashEncodeUtil;
 import dev.barrikeit.util.TimeUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
