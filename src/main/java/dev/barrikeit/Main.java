@@ -1,8 +1,8 @@
 package dev.barrikeit;
 
-import lombok.extern.log4j.Log4j2;
 import dev.barrikeit.config.ApplicationProperties;
-import dev.barrikeit.config.security.config.SecurityProperties;
+import dev.barrikeit.security.config.SecurityProperties;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

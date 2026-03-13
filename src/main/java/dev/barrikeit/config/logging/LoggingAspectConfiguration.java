@@ -12,7 +12,7 @@ import org.springframework.core.env.Environment;
 public class LoggingAspectConfiguration {
 
   @Bean
-  @Profile({ConfigurationConstants.SPRING_PROFILE_DEVELOPMENT})
+  @Profile({ConfigurationConstants.SPRING_PROFILE_DEVELOPMENT, ConfigurationConstants.SPRING_PROFILE_PRODUCTION})
   LoggingAspect loggingAspect(Environment env) {
     return new LoggingAspect(env);
   }

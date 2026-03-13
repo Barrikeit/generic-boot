@@ -1,9 +1,10 @@
 package dev.barrikeit.config;
 
+import dev.barrikeit.util.constants.ConfigurationConstants;
 import java.util.List;
 import java.util.Locale;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import dev.barrikeit.util.constants.ConfigurationConstants;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,12 +13,10 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.HandlerAdapter;
 import org.springframework.web.servlet.HandlerMapping;
-import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -25,7 +24,17 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 @Log4j2
 @Configuration
 @EnableWebMvc
+@RequiredArgsConstructor
 public class WebMvcConfiguration implements WebMvcConfigurer {
+
+  private final ApplicationProperties.ServerProperties serverProperties;
+
+  @Override
+  public void configurePathMatch(PathMatchConfigurer configurer) {
+    configurer.addPathPrefix(
+        serverProperties.getServlet().getApiPath(),
+        c -> c.isAnnotationPresent(RestController.class));
+  }
 
   @Override
   public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {

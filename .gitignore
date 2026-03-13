@@ -1,5 +1,6 @@
 dist/
 target/
+.configurations/
 .idea/
 *.iws
 *.iml
