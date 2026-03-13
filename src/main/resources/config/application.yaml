@@ -8,8 +8,8 @@ server:
   port: 9891
   timeZone: Europe/Madrid
   servlet:
-    context-path: /generic
-    apiPath: /api/v1
+    context-path: /
+    api-path: /api/v1
     encoding:
       charset: UTF-8
       enabled: true
@@ -17,8 +17,7 @@ server:
       force-response: true
 
 spring:
-  application.name: generic
-  mvc.servlet.path: /api/v1
+  application.name: @app.name@
   profiles:
     active: @spring.profiles.active@
   config:
@@ -28,15 +27,19 @@ spring:
       - application-security.yaml
       - optional:application-@spring.profiles.active@.yaml
 
+logging:
+  file:
+    path: dist/logs
+
 springdoc:
-  api-docs.path: /openapi/api-docs
-  packagesToScan: org.barrikeit.rest
+  api-docs.path: /public/api-docs
+  packagesToScan: dev.barrikeit.rest
   show-actuator: false
   swagger-ui:
     display-request-duration: true
     filter: true
     operations-sorter: method
-    path: /openapi/swagger-ui
+    path: /public/swagger-ui
     use-root-path: true
   default-consumes-media-type: application/json
   default-produces-media-type: application/json

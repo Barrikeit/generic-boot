@@ -50,6 +50,11 @@ spring:
 # CREATE ROLE "user" WITH LOGIN PASSWORD 'pass' SUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION BYPASSRLS CONNECTION LIMIT -1;
 # CREATE SCHEMA IF NOT EXISTS generic AUTHORIZATION "user";
 # ALTER ROLE "user" SET search_path TO generic;
+# CREATE EXTENSION IF NOT EXISTS unaccent;
+# ALTER EXTENSION unaccent SET SCHEMA generic;
+
+## Para conectarnos a la bbdd genérica usando el nuevo usuario, ejecutaríamos el siguiente comando:
+# psql -U user -d generic -h localhost -p 2345
 
 ## Si, por el contrario, queremos hacer uso de docker ejecutaríamos los siguientes comandos en orden:
 

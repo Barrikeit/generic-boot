@@ -1,18 +1,7 @@
-application:
-  name: generic-dev
-  version: 0.0.1-Alpha
-  build: 0
-  buildTime: 0
-
 spring:
   config:
     activate:
       on-profile: dev
-  security:
-    user:
-      name: generic_service
-      password: generic_service
-    http:
-      session-management:
-        concurrency-control:
-          max-sessions: 5
+server:
+  servlet:
+    context-path: /@app.name@
