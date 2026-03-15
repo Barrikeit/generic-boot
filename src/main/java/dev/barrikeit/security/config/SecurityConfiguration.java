@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -47,9 +49,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
  */
 @Log4j2
 @Configuration
-@AllArgsConstructor
-@ConditionalOnProperty(name = "security.enabled", havingValue = "true", matchIfMissing = true)
+@RequiredArgsConstructor
 @EnableWebSecurity
+@ConditionalOnProperty(name = "security.enabled", havingValue = "true", matchIfMissing = true)
 @Import(SecurityExceptionHandler.class)
 public class SecurityConfiguration {
 

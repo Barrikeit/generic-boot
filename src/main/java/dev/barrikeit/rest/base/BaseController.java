@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import dev.barrikeit.model.domain.base.BaseEntity;
 import dev.barrikeit.service.base.BaseService;
-import dev.barrikeit.service.dto.Response;
 import dev.barrikeit.service.dto.base.BaseDto;
 
 /**

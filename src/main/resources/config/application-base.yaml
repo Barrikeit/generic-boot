@@ -16,14 +16,14 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: false
     open-in-view: false
+    hibernate:
+      ddl-auto: validate # validate | create | create-drop | update | none
     properties:
       hibernate:
         synonyms: false
         format_sql: true
         show_sql: true
         default_schema: generic # or set the search_path in the database for the user
-        hbm2ddl:
-          auto: none # validate | create-only | drop | update | create-drop | none
         generate_statistics: false
         enable_lazy_load_no_trans: true
   session:

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import lombok.extern.log4j.Log4j2;
 import dev.barrikeit.model.domain.base.GenericCodeEntity;
 import dev.barrikeit.service.base.GenericCodeCrudService;
-import dev.barrikeit.service.dto.Response;
 import dev.barrikeit.service.dto.base.BaseDto;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;

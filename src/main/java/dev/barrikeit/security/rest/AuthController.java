@@ -5,7 +5,7 @@ import dev.barrikeit.security.rest.dto.LoginDto;
 import dev.barrikeit.security.rest.dto.RegisterDto;
 import dev.barrikeit.security.service.AuthService;
 import dev.barrikeit.security.util.JwtConstants;
-import dev.barrikeit.service.dto.Response;
+import dev.barrikeit.rest.base.Response;
 import dev.barrikeit.util.constants.ExceptionConstants;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;

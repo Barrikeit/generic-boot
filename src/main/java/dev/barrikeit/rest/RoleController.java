@@ -5,7 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import dev.barrikeit.model.domain.Role;
 import dev.barrikeit.rest.base.GenericCodeController;
 import dev.barrikeit.service.RoleService;
-import dev.barrikeit.service.dto.Response;
+import dev.barrikeit.rest.base.Response;
 import dev.barrikeit.service.dto.RoleDto;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -1,4 +1,4 @@
-package dev.barrikeit.config;
+package dev.barrikeit.security.config;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

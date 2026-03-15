@@ -5,7 +5,6 @@ import java.io.Serializable;
 import lombok.extern.log4j.Log4j2;
 import dev.barrikeit.model.domain.base.BaseEntity;
 import dev.barrikeit.service.base.FilterBaseService;
-import dev.barrikeit.service.dto.Response;
 import dev.barrikeit.service.dto.base.BaseDto;
 import dev.barrikeit.service.filter.base.BaseFilter;
 import dev.barrikeit.util.validation.SearchParams;

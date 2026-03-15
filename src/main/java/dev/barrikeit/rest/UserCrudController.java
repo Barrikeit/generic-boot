@@ -6,7 +6,7 @@ import lombok.extern.log4j.Log4j2;
 import dev.barrikeit.model.domain.User;
 import dev.barrikeit.rest.base.GenericCodeController;
 import dev.barrikeit.service.UserCrudService;
-import dev.barrikeit.service.dto.Response;
+import dev.barrikeit.rest.base.Response;
 import dev.barrikeit.service.dto.UserDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;

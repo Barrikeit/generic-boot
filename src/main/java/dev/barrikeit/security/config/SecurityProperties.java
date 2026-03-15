@@ -27,9 +27,9 @@ public class SecurityProperties {
     @Getter
     @Setter
     public static class Allowed {
+      private String origins;
       private String methods;
       private String headers;
-      private String origins;
     }
 
     @Getter
@@ -55,9 +55,9 @@ public class SecurityProperties {
   @Getter
   @Setter
   public static class AppValidatorFilterProperties {
-    private String appSelfName;
     private Boolean appHeaderNameValidationFilter;
     private String appHeaderName;
+    private String appSelfName;
     private String appSecurityName;
   }
 }

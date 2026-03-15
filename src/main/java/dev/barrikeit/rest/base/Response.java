@@ -1,4 +1,4 @@
-package dev.barrikeit.service.dto;
+package dev.barrikeit.rest.base;
 
 import java.time.Instant;
 import lombok.Getter;

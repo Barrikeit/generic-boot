@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.io.Serial;
+import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -17,6 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.JdbcTypeCode;
 
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
@@ -36,10 +38,18 @@ public class UserSession extends BaseEntity {
   @Column(name = "code_user", nullable = false)
   private UUID userCode;
 
-  @Column(name = "jti", nullable = false, length = 36)
+  @JdbcTypeCode(Types.CHAR)
+  @Column(
+      name = "jti",
+      nullable = false,
+      columnDefinition = EntityConstants.BPCHAR_COLUMN_DEFINITION)
   private String jti;
 
-  @Column(name = "jti_pair", nullable = false, length = 36)
+  @JdbcTypeCode(Types.CHAR)
+  @Column(
+      name = "jti_pair",
+      nullable = false,
+      columnDefinition = EntityConstants.BPCHAR_COLUMN_DEFINITION)
   private String jtiPair;
 
   @Column(

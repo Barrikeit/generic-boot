@@ -1,13 +1,14 @@
 package dev.barrikeit.service.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import dev.barrikeit.service.dto.base.BaseDto;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class VersionDto {
+@Builder(toBuilder = true)
+public class VersionDto extends BaseDto {
   private String name;
   private String version;
   private String build;

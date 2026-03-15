@@ -25,8 +25,10 @@ public class AppHeaderValidatorFilter extends OncePerRequestFilter {
 
     String requestURI = request.getRequestURI();
     String contextPath = request.getContextPath();
-    String endpoint =
-        requestURI.substring(contextPath.length() + servletProperties.getApiPath().length());
+    String apiPath = servletProperties.getApiPath();
+    String endpoint = requestURI.substring(contextPath.length() + apiPath.length());
+
+    log.debug("requestURI={} contextPath={} apiPath={}", requestURI, contextPath, apiPath);
 
     if (isHeaderFreeEndpoint(endpoint)) {
       log.debug("Peticion al endpoint {} PERMITIDA (endpoint publico)", requestURI);
@@ -50,7 +52,7 @@ public class AppHeaderValidatorFilter extends OncePerRequestFilter {
   }
 
   private boolean isHeaderFreeEndpoint(String endpoint) {
-    return endpoint.equals("/public")
+    return endpoint.startsWith("/public")
         || endpoint.startsWith("/error")
         || endpoint.startsWith("/version");
   }

@@ -2,7 +2,7 @@ package dev.barrikeit.rest;
 
 import lombok.extern.log4j.Log4j2;
 import dev.barrikeit.config.ApplicationProperties;
-import dev.barrikeit.service.dto.Response;
+import dev.barrikeit.rest.base.Response;
 import dev.barrikeit.service.dto.VersionDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;

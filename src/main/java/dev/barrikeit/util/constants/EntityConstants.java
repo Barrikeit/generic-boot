@@ -6,6 +6,7 @@ public class EntityConstants {
   }
 
   public static final String DATE_COLUMN_DEFINITION = "TIMESTAMP WITH TIME ZONE";
+  public static final String BPCHAR_COLUMN_DEFINITION = "CHAR(36)";
 
   // tables
   public static final String LOCATIONS = "locations";
