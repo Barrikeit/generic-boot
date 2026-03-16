@@ -1,17 +1,14 @@
 package dev.barrikeit.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import dev.barrikeit.service.dto.base.BaseDto;
+import dev.barrikeit.util.validation.Alphanumeric;
+import dev.barrikeit.util.validation.Password;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 import lombok.*;
-import dev.barrikeit.service.dto.base.BaseDto;
-import dev.barrikeit.util.constants.UtilConstants;
-import dev.barrikeit.util.validation.Alphanumeric;
 
 @Getter
 @Setter
@@ -20,7 +17,7 @@ import dev.barrikeit.util.validation.Alphanumeric;
 @Builder(toBuilder = true)
 public class UserDto extends BaseDto {
 
-  private UUID code;
+  private UUID id;
 
   @Alphanumeric @NotBlank private String username;
 
@@ -32,31 +29,13 @@ public class UserDto extends BaseDto {
 
   @Email @NotBlank private String email;
 
-  // @Password
-  @NotBlank private String password;
+  @Password @NotBlank private String password;
 
   private String phone;
 
-  private LocationDto location;
+  private DirectionDto direction;
 
-  @JsonFormat(pattern = UtilConstants.PATTERN_DATE_TIME)
-  private LocalDateTime registrationDate;
-
-  private String verificationToken;
-
-  @NotNull @Builder.Default private boolean enabled = false;
-
-  @JsonFormat(pattern = UtilConstants.PATTERN_DATE_TIME)
-  private LocalDateTime loginDate;
-
-  @NotNull @Builder.Default private Integer loginAttempts = 0;
-
-  @NotNull @Builder.Default private boolean banned = false;
-
-  @JsonFormat(pattern = UtilConstants.PATTERN_DATE_TIME)
-  private LocalDateTime banDate;
-
-  private String banReason;
+  private UserSecurityDto security;
 
   @Valid private Set<RoleDto> roles;
 

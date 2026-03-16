@@ -1,16 +1,12 @@
 package dev.barrikeit.security.model.domain;
 
-import dev.barrikeit.model.domain.base.BaseEntity;
+import dev.barrikeit.model.domain.base.GenericEntity;
 import dev.barrikeit.util.constants.EntityConstants;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.io.Serial;
 import java.sql.Types;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -27,44 +23,38 @@ import org.hibernate.annotations.JdbcTypeCode;
 @Setter
 @Entity
 @Table(name = EntityConstants.USER_SESSIONS)
-public class UserSession extends BaseEntity {
-  @Serial private static final long serialVersionUID = 1L;
+public class UserSession extends GenericEntity<UUID> {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  @Column(name = EntityConstants.ID_USER_SESSION, updatable = false, nullable = false)
-  private UUID id;
-
-  @Column(name = "code_user", nullable = false)
-  private UUID userCode;
+  @Column(name = EntityConstants.ID_USER, nullable = false, updatable = false)
+  private UUID idUser;
 
   @JdbcTypeCode(Types.CHAR)
   @Column(
-      name = "jti",
+      name = EntityConstants.JTI,
       nullable = false,
       columnDefinition = EntityConstants.BPCHAR_COLUMN_DEFINITION)
   private String jti;
 
   @JdbcTypeCode(Types.CHAR)
   @Column(
-      name = "jti_pair",
+      name = EntityConstants.JTI_PAIR,
       nullable = false,
       columnDefinition = EntityConstants.BPCHAR_COLUMN_DEFINITION)
   private String jtiPair;
 
   @Column(
-      name = "issued_at",
+      name = EntityConstants.ISSUED_AT,
       nullable = false,
       columnDefinition = EntityConstants.DATE_COLUMN_DEFINITION)
-  private LocalDateTime issuedAt;
+  private OffsetDateTime issuedAt;
 
   @Column(
-      name = "expires_at",
+      name = EntityConstants.EXPIRES_AT,
       nullable = false,
       columnDefinition = EntityConstants.DATE_COLUMN_DEFINITION)
-  private LocalDateTime expiresAt;
+  private OffsetDateTime expiresAt;
 
-  @Column(name = "token_type", nullable = false)
+  @Column(name = EntityConstants.TOKEN_TYPE, nullable = false)
   private String tokenType; // ACCESS / REFRESH
 
   @Override
@@ -75,7 +65,7 @@ public class UserSession extends BaseEntity {
 
     return Objects.equals(id, that.id)
         && Objects.equals(jti, that.jti)
-        && Objects.equals(userCode, that.userCode);
+        && Objects.equals(idUser, that.idUser);
   }
 
   @Override

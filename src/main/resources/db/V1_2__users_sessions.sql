@@ -1,18 +1,18 @@
 CREATE TABLE user_sessions
 (
-    id_user_session UUID                     NOT NULL DEFAULT gen_random_uuid(), -- identificador de la relación
-    code_user       UUID                     NOT NULL,                           -- identificador del usuario
-    jti             CHAR(36)                 NOT NULL,                           -- JWT ID
-    jti_pair        CHAR(36)                 NOT NULL,                           -- JWT Pair ID
-    issued_at       TIMESTAMP WITH TIME ZONE NOT NULL,                           -- fecha y hora de la creación
-    expires_at      TIMESTAMP WITH TIME ZONE NOT NULL,                           -- fecha y hora de la expiración
-    token_type      VARCHAR(20)              NOT NULL                            -- ACCESS / REFRESH
+    id         UUID                     NOT NULL DEFAULT gen_random_uuid(), -- session identifier
+    id_user    UUID                     NOT NULL,                           -- fk -> users.id
+    jti        CHAR(36)                 NOT NULL,                           -- jwt id
+    jti_pair   CHAR(36)                 NOT NULL,                           -- paired jwt id (access <-> refresh)
+    issued_at  TIMESTAMP WITH TIME ZONE NOT NULL,                           -- when the token was issued
+    expires_at TIMESTAMP WITH TIME ZONE NOT NULL,                           -- when the token expires
+    token_type VARCHAR(20)              NOT NULL                            -- ACCESS or REFRESH
 );
 
 ALTER TABLE user_sessions
-    ADD CONSTRAINT pk_user_sessions PRIMARY KEY (id_user_session),
-    ADD CONSTRAINT uq_user_jti UNIQUE (code_user, jti),
-    ADD CONSTRAINT fk_user_sessions_user FOREIGN KEY (code_user) REFERENCES users (code_user) ON DELETE CASCADE;
+    ADD CONSTRAINT pk_user_sessions PRIMARY KEY (id),
+    ADD CONSTRAINT uq_user_jti UNIQUE (id_user, jti),
+    ADD CONSTRAINT fk_sessions_user FOREIGN KEY (id_user) REFERENCES users (id) ON DELETE CASCADE;
 
-CREATE INDEX idx_user_token_user ON user_sessions (code_user);
-CREATE INDEX idx_user_token_expires_at ON user_sessions (expires_at);
+CREATE INDEX idx_sessions_user ON user_sessions (id_user);
+CREATE INDEX idx_sessions_expires_at ON user_sessions (expires_at);

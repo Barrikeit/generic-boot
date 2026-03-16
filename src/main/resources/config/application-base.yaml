@@ -38,7 +38,7 @@ spring:
 ## Para ello nos tendremos que conectar a la bbdd genérica de postgres usando psql, crearemos la bbdd de este proyecto llamada 'generic' y nos conectaremos a ella, creamos un usuario llamado 'user' con ciertos permisos y creamos un esquema con el mismo nombre para ese usuario e indicamos que lo utilice como default en vez de el esquema public
 ## Pero primero tendremos instalar la última version de postgresql 17, ponle o no contraseña al usuario postgres y en el haz que el puerto sea 2345
 ## Añade psql al PATH de Windows
-## Abre Configuración del sistema → Variables de entorno.
+## Abre Configuración del sistema -> Variables de entorno.
 ## En “Variables del sistema”, selecciona Path y haz clic en Editar.
 ## Haz clic en Nuevo y añade la ruta al directorio bin C:\Program Files\PostgreSQL\17\bin
 ## Acepta y cierra las ventanas

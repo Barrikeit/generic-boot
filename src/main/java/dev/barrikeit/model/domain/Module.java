@@ -1,17 +1,18 @@
 package dev.barrikeit.model.domain;
 
-import jakarta.persistence.*;
+import dev.barrikeit.model.domain.base.GenericCodeEntity;
+import dev.barrikeit.util.constants.EntityConstants;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.io.Serial;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import dev.barrikeit.model.domain.base.GenericCodeEntity;
-import dev.barrikeit.util.constants.EntityConstants;
 
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
@@ -20,19 +21,11 @@ import dev.barrikeit.util.constants.EntityConstants;
 @Setter
 @Entity
 @Table(name = EntityConstants.MODULES)
-@AttributeOverride(
-    name = EntityConstants.ID,
-    column = @Column(name = EntityConstants.ID_MODULE, nullable = false))
-@AttributeOverride(
-    name = EntityConstants.CODE,
-    column =
-        @Column(name = EntityConstants.CODE_MODULE, length = 3, nullable = false, unique = true))
 public class Module extends GenericCodeEntity<Integer, String> {
-  @Serial private static final long serialVersionUID = 1L;
 
   @Size(max = 200)
   @NotNull
-  @Column(name = "module", nullable = false, length = 200)
+  @Column(name = EntityConstants.NAME, nullable = false, length = 200)
   private String name;
 
   @Override

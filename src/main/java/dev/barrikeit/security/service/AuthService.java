@@ -118,7 +118,7 @@ public class AuthService {
 
     UUID accessUserCode = jwtUtil.extractUserCode(accessToken);
     String accessJti = jwtUtil.extractJti(accessToken);
-    if (!refreshSession.getUserCode().equals(accessUserCode)) {
+    if (!refreshSession.getIdUser().equals(accessUserCode)) {
       throw new BadCredentialsException(ExceptionConstants.ERROR_TOKEN_INVALID);
     }
     if (!refreshSession.getJtiPair().equals(accessJti)) {
@@ -132,7 +132,7 @@ public class AuthService {
   }
 
   private JwtDto issueTokenPair(BasicUserDetails user) {
-    UUID userCode = user.getCode();
+    UUID userCode = user.getId();
 
     long activeSessions = sessionService.activeSessions(userCode, TokenType.ACCESS);
     if (activeSessions >= securityProperties.getMaxConcurrentSessions()) {

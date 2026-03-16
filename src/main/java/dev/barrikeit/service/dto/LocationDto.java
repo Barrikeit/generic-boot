@@ -1,8 +1,7 @@
 package dev.barrikeit.service.dto;
 
-import java.util.UUID;
-import lombok.*;
 import dev.barrikeit.service.dto.base.BaseDto;
+import lombok.*;
 
 @Getter
 @Setter
@@ -11,9 +10,7 @@ import dev.barrikeit.service.dto.base.BaseDto;
 @Builder(toBuilder = true)
 public class LocationDto extends BaseDto {
 
-  private UUID code;
-
-  private String name;
+  private String code;
 
   private String country;
 
@@ -22,8 +19,8 @@ public class LocationDto extends BaseDto {
   @Override
   public String toString() {
     return "LocationDto{"
-        + "name='"
-        + name
+        + "code='"
+        + code
         + '\''
         + ", country='"
         + country

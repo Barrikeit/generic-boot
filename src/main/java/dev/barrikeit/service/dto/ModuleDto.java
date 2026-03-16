@@ -12,17 +12,16 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class RoleDto extends BaseDto {
+public class ModuleDto extends BaseDto {
 
   @NotNull
-  @Size(max = 2)
+  @Size(max = 3)
   @Sanitize
   @Alphanumeric
   String code;
 
   @NotNull
-  @Size(max = 50)
+  @Size(max = 200)
   @Sanitize
-  @Alphanumeric
   String name;
 }

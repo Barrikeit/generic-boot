@@ -15,7 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class BasicUserDetails implements UserDetails {
 
   @Serial private static final long serialVersionUID = 1L;
-  private final UUID code;
+  private final UUID id;
   private final String username;
   @JsonIgnore private final String password;
   private final boolean enabled;
@@ -24,14 +24,14 @@ public class BasicUserDetails implements UserDetails {
   private final Collection<? extends GrantedAuthority> authorities;
 
   public BasicUserDetails(
-      UUID code,
+      UUID id,
       String username,
       String password,
       boolean enabled,
       boolean banned,
       List<? extends GrantedAuthority> roles,
       List<? extends GrantedAuthority> authorities) {
-    this.code = code;
+    this.id = id;
     this.username = username;
     this.password = password;
     this.enabled = enabled;
@@ -61,11 +61,11 @@ public class BasicUserDetails implements UserDetails {
 
   @Override
   public boolean equals(Object o) {
-    return o instanceof BasicUserDetails that && Objects.equals(code, that.code);
+    return o instanceof BasicUserDetails that && Objects.equals(id, that.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(code);
+    return Objects.hash(id);
   }
 }

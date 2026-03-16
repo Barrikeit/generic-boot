@@ -40,7 +40,7 @@ public class JwtUtil {
         .issuer(issuer)
         .issuedAt(Date.from(now))
         .expiration(Date.from(now.plusSeconds(expirationSeconds)))
-        .claim(JwtConstants.USER_CODE, userDetails.getCode())
+        .claim(JwtConstants.USER_CODE, userDetails.getId())
         .claim(JwtConstants.ROLES, userDetails.getRolesNames())
         .claim(JwtConstants.AUTHORITIES, userDetails.getAuthorityNames())
         .claim(JwtConstants.REFRESHABLE, refreshable)

@@ -1,21 +1,18 @@
 package dev.barrikeit.model.domain;
 
-import jakarta.persistence.AttributeOverride;
+import dev.barrikeit.model.domain.base.GenericCodeEntity;
+import dev.barrikeit.util.constants.EntityConstants;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.io.Serial;
 import java.util.Objects;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import dev.barrikeit.model.domain.base.GenericCodeEntity;
-import dev.barrikeit.util.constants.EntityConstants;
 
 @Getter
 @Setter
@@ -24,27 +21,15 @@ import dev.barrikeit.util.constants.EntityConstants;
 @SuperBuilder(toBuilder = true)
 @Entity
 @Table(name = EntityConstants.LOCATIONS)
-@AttributeOverride(
-    name = EntityConstants.ID,
-    column = @Column(name = EntityConstants.ID_LOCATION, nullable = false))
-@AttributeOverride(
-    name = EntityConstants.CODE,
-    column = @Column(name = EntityConstants.CODE_LOCATION, nullable = false))
-public class Location extends GenericCodeEntity<Long, UUID> {
-  @Serial private static final long serialVersionUID = 1L;
+public class Location extends GenericCodeEntity<Integer, String> {
 
   @NotNull
   @Size(max = 255)
-  @Column(name = "location", nullable = false)
-  private String name;
-
-  @NotNull
-  @Size(max = 255)
-  @Column(name = "country", nullable = false)
+  @Column(name = EntityConstants.COUNTRY, nullable = false)
   private String country;
 
   @Size(max = 255)
-  @Column(name = "city")
+  @Column(name = EntityConstants.CITY)
   private String city;
 
   @Override
@@ -53,7 +38,7 @@ public class Location extends GenericCodeEntity<Long, UUID> {
     if (!(o instanceof Location e)) return false;
     if (!super.equals(o)) return false;
 
-    return Objects.equals(code, e.code) && Objects.equals(name, e.name);
+    return Objects.equals(code, e.code) && Objects.equals(country, e.country);
   }
 
   @Override

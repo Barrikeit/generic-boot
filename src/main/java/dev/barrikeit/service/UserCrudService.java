@@ -1,14 +1,10 @@
 package dev.barrikeit.service;
 
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import lombok.extern.log4j.Log4j2;
 import dev.barrikeit.model.domain.Role;
 import dev.barrikeit.model.domain.User;
 import dev.barrikeit.model.repository.RoleRepository;
 import dev.barrikeit.model.repository.UserRepository;
-import dev.barrikeit.service.base.GenericCodeCrudService;
+import dev.barrikeit.service.base.GenericCrudService;
 import dev.barrikeit.service.dto.UserDto;
 import dev.barrikeit.service.mapper.UserMapper;
 import dev.barrikeit.util.EmailUtil;
@@ -18,6 +14,10 @@ import dev.barrikeit.util.constants.ExceptionConstants;
 import dev.barrikeit.util.enums.EmailType;
 import dev.barrikeit.util.exceptions.BadRequestException;
 import dev.barrikeit.util.exceptions.NotFoundException;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
 @Service
-public class UserCrudService extends GenericCodeCrudService<User, Long, UUID, UserDto> {
+public class UserCrudService extends GenericCrudService<User, Long, UUID, UserDto> {
   private final UserRepository repository;
   private final UserMapper mapper;
 
@@ -36,9 +36,7 @@ public class UserCrudService extends GenericCodeCrudService<User, Long, UUID, Us
       PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
   public UserCrudService(
-      UserRepository repository,
-      UserMapper mapper,
-      RoleRepository roleRepository) {
+      UserRepository repository, UserMapper mapper, RoleRepository roleRepository) {
     super(repository, mapper);
     this.repository = repository;
     this.mapper = mapper;

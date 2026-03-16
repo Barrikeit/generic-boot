@@ -1,7 +1,7 @@
 package dev.barrikeit.model.domain.base;
 
 import jakarta.persistence.*;
-import java.io.Serial;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
@@ -18,17 +18,18 @@ import org.springframework.data.domain.Persistable;
 @Setter
 @MappedSuperclass
 public abstract class GenericEntity<I extends Serializable> extends BaseEntity
-    implements Serializable, Persistable<I> {
-  @Serial private static final long serialVersionUID = 1L;
+    implements Persistable<I> {
 
+  @NotNull
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "id", updatable = false, nullable = false)
   protected I id;
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof GenericEntity<? extends Serializable> that)) return false;
+    if (!(o instanceof GenericEntity<?> that)) return false;
     return Objects.equals(id, that.id);
   }
 

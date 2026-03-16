@@ -14,4 +14,7 @@ public interface LocationMapper extends BaseMapper<Location, LocationDto> {
   Location toEntity(LocationDto source);
 
   LocationDto toDto(Location source);
+
+  @Mapping(target = "id", ignore = true)
+  void updateEntity(LocationDto source, @MappingTarget Location target);
 }

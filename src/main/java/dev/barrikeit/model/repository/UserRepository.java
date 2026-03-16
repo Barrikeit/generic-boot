@@ -1,15 +1,14 @@
 package dev.barrikeit.model.repository;
 
-import java.util.Optional;
-import java.util.UUID;
 import dev.barrikeit.model.domain.User;
 import dev.barrikeit.model.repository.base.FilterBaseRepository;
-import dev.barrikeit.model.repository.base.GenericCodeRepository;
+import dev.barrikeit.model.repository.base.GenericRepository;
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository
-    extends GenericCodeRepository<User, Long, UUID>, FilterBaseRepository<User> {
+public interface UserRepository extends GenericRepository<User, UUID>, FilterBaseRepository<User> {
 
   Optional<User> findByUsernameEqualsIgnoreCase(String user);
 

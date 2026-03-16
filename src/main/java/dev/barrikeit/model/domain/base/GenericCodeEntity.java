@@ -1,5 +1,6 @@
 package dev.barrikeit.model.domain.base;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
@@ -21,7 +22,9 @@ public abstract class GenericCodeEntity<I extends Serializable, C extends Serial
     extends GenericEntity<I> {
   @Serial private static final long serialVersionUID = 1L;
 
-  @NotNull protected C code;
+  @NotNull
+  @Column(name = "code", updatable = false, nullable = false, unique = true)
+  protected C code;
 
   @Override
   public boolean equals(Object o) {

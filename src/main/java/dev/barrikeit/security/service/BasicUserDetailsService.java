@@ -55,7 +55,7 @@ public class BasicUserDetailsService {
   public BasicUserDetails loadUser(final String username) throws NotFoundException {
     User user = findByUsername(username);
     return new BasicUserDetails(
-        user.getCode(),
+        user.getId(),
         user.getUsername(),
         user.getPassword(),
         user.isEnabled(),
