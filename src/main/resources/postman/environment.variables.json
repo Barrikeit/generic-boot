@@ -33,8 +33,14 @@
 			"enabled": true
 		},
 		{
-			"key": "apiVersion",
-			"value": "/generic/api/v1",
+			"key": "contextPath",
+			"value": "/generic",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "apiPath",
+			"value": "/api/v1",
 			"type": "default",
 			"enabled": true
 		},

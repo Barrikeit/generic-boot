@@ -40,7 +40,7 @@ public class JwtUtil {
         .issuer(issuer)
         .issuedAt(Date.from(now))
         .expiration(Date.from(now.plusSeconds(expirationSeconds)))
-        .claim(JwtConstants.USER_CODE, userDetails.getId())
+        .claim(JwtConstants.USER, userDetails.getId())
         .claim(JwtConstants.ROLES, userDetails.getRolesNames())
         .claim(JwtConstants.AUTHORITIES, userDetails.getAuthorityNames())
         .claim(JwtConstants.REFRESHABLE, refreshable)
@@ -76,8 +76,8 @@ public class JwtUtil {
     return parseToken(token).getSubject();
   }
 
-  public UUID extractUserCode(String token) {
-    return UUID.fromString(parseToken(token).get(JwtConstants.USER_CODE, String.class));
+  public UUID extractUserId(String token) {
+    return UUID.fromString(parseToken(token).get(JwtConstants.USER, String.class));
   }
 
   public Date extractIssuedDate(String token) {

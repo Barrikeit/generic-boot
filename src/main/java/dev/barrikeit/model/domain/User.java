@@ -67,7 +67,7 @@ public class User extends GenericEntity<UUID> {
   @JoinColumn(name = EntityConstants.ID_DIRECTION)
   private Direction direction;
 
-  @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+  @OneToOne(mappedBy = EntityConstants.MAPS_ID, cascade = CascadeType.ALL, optional = false)
   private UserSecurity security;
 
   @ManyToMany

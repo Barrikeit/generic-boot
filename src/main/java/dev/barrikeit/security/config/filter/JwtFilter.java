@@ -67,9 +67,9 @@ public class JwtFilter extends OncePerRequestFilter {
   }
 
   private void validateActiveSession(String jwt) {
-    UUID userCode = jwtUtil.extractUserCode(jwt);
+    UUID userId = jwtUtil.extractUserId(jwt);
     String jti = jwtUtil.extractJti(jwt);
-    if (!userSessionService.validateToken(userCode, jti)) {
+    if (!userSessionService.validateToken(userId, jti)) {
       throw new SessionAuthenticationException("Sesión no válida");
     }
   }

@@ -1,17 +1,16 @@
 package dev.barrikeit.util;
 
-import static dev.barrikeit.util.TimeUtil.convertLocalDate;
-import static dev.barrikeit.util.TimeUtil.convertLocalDateTime;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
-import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.ObjectUtils;
 import dev.barrikeit.model.domain.base.GenericEntity;
 import dev.barrikeit.service.dto.base.BaseDto;
 import dev.barrikeit.util.exceptions.UnExpectedException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.ObjectUtils;
 
 @Log4j2
 public class ObjectUtil {
@@ -31,7 +30,8 @@ public class ObjectUtil {
         || Boolean.class.isAssignableFrom(type)
         || Date.class.isAssignableFrom(type)
         || type.equals(LocalDate.class)
-        || type.equals(LocalDateTime.class);
+        || type.equals(LocalDateTime.class)
+        || type.equals(OffsetDateTime.class);
   }
 
   /** Convierte el valor de texto en booleano, lanzando excepción si el formato es inválido. */
@@ -80,12 +80,23 @@ public class ObjectUtil {
         if (value instanceof Double d) return (M) BigDecimal.valueOf(d);
       } else if (targetType.equals(Boolean.class) || targetType.equals(boolean.class)) {
         if (value instanceof String string) return (M) Boolean.valueOf(string);
+      } else if (targetType.equals(OffsetDateTime.class)) {
+        if (value instanceof String string) return (M) TimeUtil.convertOffsetDateTime(string);
+        if (value instanceof LocalDate date)
+          return (M) date.atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime();
+        if (value instanceof LocalDateTime date)
+          return (M) date.atZone(ZoneId.systemDefault()).toOffsetDateTime();
       } else if (targetType.equals(LocalDate.class)) {
-        if (value instanceof String string) return (M) convertLocalDate(string);
+        if (value instanceof String string)
+          return (M) TimeUtil.convertOffsetDateTime(string).toLocalDate();
+        if (value instanceof OffsetDateTime odt) return (M) odt.toLocalDate();
         if (value instanceof LocalDateTime date) return (M) date.toLocalDate();
       } else if (targetType.equals(LocalDateTime.class)) {
-        if (value instanceof String string) return (M) convertLocalDateTime(string);
+        // keep for backwards compat but prefer OffsetDateTime
+        if (value instanceof String string)
+          return (M) TimeUtil.convertOffsetDateTime(string).toLocalDateTime();
         if (value instanceof LocalDate date) return (M) date.atStartOfDay();
+        if (value instanceof OffsetDateTime odt) return (M) odt.toLocalDateTime();
       }
     } catch (Exception e) {
       throw new UnExpectedException(

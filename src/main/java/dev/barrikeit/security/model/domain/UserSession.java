@@ -26,7 +26,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 public class UserSession extends GenericEntity<UUID> {
 
   @Column(name = EntityConstants.ID_USER, nullable = false, updatable = false)
-  private UUID idUser;
+  private UUID userId;
 
   @JdbcTypeCode(Types.CHAR)
   @Column(
@@ -65,7 +65,7 @@ public class UserSession extends GenericEntity<UUID> {
 
     return Objects.equals(id, that.id)
         && Objects.equals(jti, that.jti)
-        && Objects.equals(idUser, that.idUser);
+        && Objects.equals(userId, that.userId);
   }
 
   @Override

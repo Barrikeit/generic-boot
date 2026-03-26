@@ -15,7 +15,7 @@ import dev.barrikeit.util.constants.ExceptionConstants;
 import dev.barrikeit.util.exceptions.BadRequestException;
 import dev.barrikeit.util.exceptions.NotFoundException;
 import io.jsonwebtoken.ExpiredJwtException;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -112,29 +112,29 @@ public class AuthService {
       throw new BadCredentialsException(ExceptionConstants.ERROR_TOKEN_EXPIRED);
     }
 
-    UUID refreshUserCode = jwtUtil.extractUserCode(refreshToken);
+    UUID refreshuserId = jwtUtil.extractUserId(refreshToken);
     String refreshJti = jwtUtil.extractJti(refreshToken);
-    UserSession refreshSession = sessionService.findSession(refreshUserCode, refreshJti);
+    UserSession refreshSession = sessionService.findSession(refreshuserId, refreshJti);
 
-    UUID accessUserCode = jwtUtil.extractUserCode(accessToken);
+    UUID accessuserId = jwtUtil.extractUserId(accessToken);
     String accessJti = jwtUtil.extractJti(accessToken);
-    if (!refreshSession.getIdUser().equals(accessUserCode)) {
+    if (!refreshSession.getUserId().equals(accessuserId)) {
       throw new BadCredentialsException(ExceptionConstants.ERROR_TOKEN_INVALID);
     }
     if (!refreshSession.getJtiPair().equals(accessJti)) {
       throw new BadCredentialsException(ExceptionConstants.ERROR_TOKEN_INVALID);
     }
 
-    BasicUserDetails user = basicUserDetailsService.loadUserByCode(accessUserCode);
-    sessionService.revokeTokenPair(accessUserCode, accessJti);
+    BasicUserDetails user = basicUserDetailsService.loadUserByCode(accessuserId);
+    sessionService.revokeTokenPair(accessuserId, accessJti);
 
     return issueTokenPair(user);
   }
 
   private JwtDto issueTokenPair(BasicUserDetails user) {
-    UUID userCode = user.getId();
+    UUID userId = user.getId();
 
-    long activeSessions = sessionService.activeSessions(userCode, TokenType.ACCESS);
+    long activeSessions = sessionService.activeSessions(userId, TokenType.ACCESS);
     if (activeSessions >= securityProperties.getMaxConcurrentSessions()) {
       throw new BadRequestException(
           ExceptionConstants.ERROR_MAX_SESSIONS_CONCURRENT_USER, user.getUsername());
@@ -146,22 +146,22 @@ public class AuthService {
     String accessToken = jwtUtil.generateAccessToken(user, accessJti);
     String refreshToken = jwtUtil.generateRefreshToken(user, refreshJti);
 
-    LocalDateTime now = TimeUtil.localDateTimeNow();
+    OffsetDateTime now = TimeUtil.offsetDateTimeNow();
 
     sessionService.createSession(
-        userCode,
+        userId,
         accessJti,
         refreshJti,
         now,
-        TimeUtil.toLocalDateTime(jwtUtil.extractExpirationDate(accessToken)),
+        TimeUtil.toOffsetDateTime(jwtUtil.extractExpirationDate(accessToken)),
         TokenType.ACCESS.name());
 
     sessionService.createSession(
-        userCode,
+        userId,
         refreshJti,
         accessJti,
         now,
-        TimeUtil.toLocalDateTime(jwtUtil.extractExpirationDate(refreshToken)),
+        TimeUtil.toOffsetDateTime(jwtUtil.extractExpirationDate(refreshToken)),
         TokenType.REFRESH.name());
 
     return JwtDto.builder()
@@ -181,9 +181,9 @@ public class AuthService {
    * @throws BadRequestException if the token is missing or invalid
    */
   public void logout(String accessToken) {
-    UUID userCode = jwtUtil.extractUserCode(accessToken);
+    UUID userId = jwtUtil.extractUserId(accessToken);
     String jti = jwtUtil.extractJti(accessToken);
-    sessionService.revokeTokenPair(userCode, jti);
+    sessionService.revokeTokenPair(userId, jti);
   }
 
   /**
@@ -196,9 +196,9 @@ public class AuthService {
    * @throws BadRequestException if the token is missing or invalid
    */
   public JwtDto checkSession(String accessToken) {
-    UUID userCode = jwtUtil.extractUserCode(accessToken);
+    UUID userId = jwtUtil.extractUserId(accessToken);
     String jti = jwtUtil.extractJti(accessToken);
-    if (!sessionService.validateToken(userCode, jti)) {
+    if (!sessionService.validateToken(userId, jti)) {
       throw new SessionAuthenticationException("Sesión no válida");
     }
     return JwtDto.builder()

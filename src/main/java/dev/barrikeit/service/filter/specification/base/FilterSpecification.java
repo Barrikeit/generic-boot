@@ -1,8 +1,9 @@
 package dev.barrikeit.service.filter.specification.base;
 
+import dev.barrikeit.util.TimeUtil;
 import jakarta.persistence.criteria.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -10,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import dev.barrikeit.util.TimeUtil;
 import org.springframework.data.jpa.domain.Specification;
 
 @Builder
@@ -89,20 +89,20 @@ public class FilterSpecification<E> implements Specification<E> {
   }
 
   private Predicate greaterThanPredicate(Root<E> root, CriteriaBuilder criteriaBuilder) {
-    if (root.get(this.searchCriteria.getKey()).getJavaType() == LocalDate.class) {
+    Class<?> javaType = root.get(this.searchCriteria.getKey()).getJavaType();
+    if (javaType == OffsetDateTime.class) {
+      OffsetDateTime value =
+          searchCriteria.getValue() instanceof String s
+              ? TimeUtil.convertOffsetDateTime(s)
+              : (OffsetDateTime) searchCriteria.getValue();
+      return criteriaBuilder.greaterThanOrEqualTo(root.get(this.searchCriteria.getKey()), value);
+    } else if (javaType == LocalDate.class) {
       LocalDate localDate =
-          searchCriteria.getValue() instanceof String
-              ? TimeUtil.convertLocalDate((String) searchCriteria.getValue())
+          searchCriteria.getValue() instanceof String s
+              ? TimeUtil.convertOffsetDateTime(s).toLocalDate()
               : (LocalDate) searchCriteria.getValue();
       return criteriaBuilder.greaterThanOrEqualTo(
           root.get(this.searchCriteria.getKey()), localDate);
-    } else if (root.get(this.searchCriteria.getKey()).getJavaType() == LocalDateTime.class) {
-      LocalDateTime localDateTime =
-          searchCriteria.getValue() instanceof String
-              ? TimeUtil.convertLocalDateTime((String) searchCriteria.getValue())
-              : (LocalDateTime) searchCriteria.getValue();
-      return criteriaBuilder.greaterThanOrEqualTo(
-          root.get(this.searchCriteria.getKey()), localDateTime);
     } else {
       return criteriaBuilder.greaterThanOrEqualTo(
           root.get(this.searchCriteria.getKey()), searchCriteria.getValue().toString());
@@ -110,19 +110,19 @@ public class FilterSpecification<E> implements Specification<E> {
   }
 
   private Predicate lessThanPredicate(Root<E> root, CriteriaBuilder criteriaBuilder) {
-    if (root.get(this.searchCriteria.getKey()).getJavaType() == LocalDate.class) {
+    Class<?> javaType = root.get(this.searchCriteria.getKey()).getJavaType();
+    if (javaType == OffsetDateTime.class) {
+      OffsetDateTime value =
+          searchCriteria.getValue() instanceof String s
+              ? TimeUtil.convertOffsetDateTime(s)
+              : (OffsetDateTime) searchCriteria.getValue();
+      return criteriaBuilder.lessThanOrEqualTo(root.get(this.searchCriteria.getKey()), value);
+    } else if (javaType == LocalDate.class) {
       LocalDate localDate =
-          searchCriteria.getValue() instanceof String
-              ? TimeUtil.convertLocalDate((String) searchCriteria.getValue())
+          searchCriteria.getValue() instanceof String s
+              ? TimeUtil.convertOffsetDateTime(s).toLocalDate()
               : (LocalDate) searchCriteria.getValue();
       return criteriaBuilder.lessThanOrEqualTo(root.get(this.searchCriteria.getKey()), localDate);
-    } else if (root.get(this.searchCriteria.getKey()).getJavaType() == LocalDateTime.class) {
-      LocalDateTime localDateTime =
-          searchCriteria.getValue() instanceof String
-              ? TimeUtil.convertLocalDateTime((String) searchCriteria.getValue())
-              : (LocalDateTime) searchCriteria.getValue();
-      return criteriaBuilder.lessThanOrEqualTo(
-          root.get(this.searchCriteria.getKey()), localDateTime);
     } else {
       return criteriaBuilder.lessThanOrEqualTo(
           root.get(this.searchCriteria.getKey()), this.searchCriteria.getValue().toString());

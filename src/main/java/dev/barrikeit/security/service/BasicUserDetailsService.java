@@ -58,23 +58,23 @@ public class BasicUserDetailsService {
         user.getId(),
         user.getUsername(),
         user.getPassword(),
-        user.isEnabled(),
-        user.isBanned(),
+        user.getSecurity().isEnabled(),
+        user.getSecurity().isBanned(),
         getRoles(user),
         getAuthorities(user));
   }
 
-  public BasicUserDetails loadUserByCode(UUID userCode) {
+  public BasicUserDetails loadUserByCode(UUID userId) {
     User user =
         repository
-            .findByCode(userCode)
-            .orElseThrow(() -> new NotFoundException(ExceptionConstants.ERROR_NOT_FOUND, userCode));
+            .findById(userId)
+            .orElseThrow(() -> new NotFoundException(ExceptionConstants.ERROR_NOT_FOUND, userId));
     return new BasicUserDetails(
-        user.getCode(),
+        user.getId(),
         user.getUsername(),
         user.getPassword(),
-        user.isEnabled(),
-        user.isBanned(),
+        user.getSecurity().isEnabled(),
+        user.getSecurity().isBanned(),
         getRoles(user),
         getAuthorities(user));
   }
@@ -91,11 +91,11 @@ public class BasicUserDetailsService {
       }
       return new UsernamePasswordAuthenticationToken(
           new BasicUserDetails(
-              user.getCode(),
+              user.getId(),
               user.getUsername(),
               user.getPassword(),
-              user.isEnabled(),
-              user.isBanned(),
+              user.getSecurity().isEnabled(),
+              user.getSecurity().isBanned(),
               getRoles(user),
               getAuthorities(user)),
           dto.getPassword(),
@@ -111,13 +111,14 @@ public class BasicUserDetailsService {
     user.setUsername(dto.getUsername());
     user.setPassword(passwordEncoder.encode(dto.getPassword()));
     mapper.updateEntity(dto, user);
-    user.setRegistrationDate(TimeUtil.localDateTimeNow());
-    user.setVerificationToken(RandomUtil.getRandomBase64EncodedString(14));
+    user.getSecurity().setRegistrationDate(TimeUtil.offsetDateTimeNow());
+    user.getSecurity().setVerificationToken(RandomUtil.getRandomBase64EncodedString(14));
 
     user = repository.save(user);
     UserDto registeredUserDto = mapper.toDto(user);
     EmailUtil.sendEmail(registeredUserDto, EmailType.REGISTER_USER);
-    return URLEncoder.encode(registeredUserDto.getVerificationToken(), StandardCharsets.UTF_8);
+    return URLEncoder.encode(
+        registeredUserDto.getSecurity().getVerificationToken(), StandardCharsets.UTF_8);
   }
 
   private User validateUserToCreateUpdate(UserDto dto, boolean isCreate) {
@@ -128,9 +129,7 @@ public class BasicUserDetailsService {
 
   private User validateUsername(UserDto dto, boolean isCreate) {
     User user = repository.findByUsernameEqualsIgnoreCase(dto.getUsername()).orElse(new User());
-    if (isCreate && user.isNew()) {
-      user.setCode(UUID.randomUUID());
-    } else if (isCreate && !user.isNew()) {
+    if (isCreate && !user.isNew()) {
       throw new BadRequestException(
           ExceptionConstants.ERROR_USER_NAME_ALREADY_EXISTS, dto.getUsername());
     } else if (!isCreate && user.isNew()) {
@@ -174,20 +173,20 @@ public class BasicUserDetailsService {
             .findByVerificationToken(verificationToken)
             .orElseThrow(
                 () -> new NotFoundException(ExceptionConstants.ERROR_NOT_FOUND, verificationToken));
-    if (registeredUser.isEnabled()) {
+    if (registeredUser.getSecurity().isEnabled()) {
       throw new BadRequestException(ExceptionConstants.ERROR_USER_ALREADY_ENABLED);
     } else {
-      registeredUser.setVerificationToken(null);
-      registeredUser.setEnabled(true);
+      registeredUser.getSecurity().setVerificationToken(null);
+      registeredUser.getSecurity().setEnabled(true);
       repository.save(registeredUser);
     }
   }
 
   public void checkAttempts(final User user) {
-    int loginAttempts = user.getLoginAttempts();
+    int loginAttempts = user.getSecurity().getLoginAttempts();
     if (loginAttempts < 10) {
       loginAttempts++;
-      user.setLoginAttempts(loginAttempts);
+      user.getSecurity().setLoginAttempts(loginAttempts);
     } else {
       banUser(user);
     }
@@ -195,14 +194,14 @@ public class BasicUserDetailsService {
   }
 
   public User banUser(final User user) {
-    user.setBanned(Boolean.TRUE);
-    user.setBanDate(TimeUtil.localDateTimeNow());
+    user.getSecurity().setBanned(Boolean.TRUE);
+    user.getSecurity().setBanDate(TimeUtil.offsetDateTimeNow());
     return repository.save(user);
   }
 
   public User unbanUser(final User user) {
-    user.setBanned(Boolean.FALSE);
-    user.setBanDate(null);
+    user.getSecurity().setBanned(Boolean.FALSE);
+    user.getSecurity().setBanDate(null);
     return repository.save(user);
   }
 
@@ -211,14 +210,14 @@ public class BasicUserDetailsService {
   }
 
   private User resetAttempts(final User user) {
-    user.setBanned(false);
-    user.setBanDate(null);
-    user.setLoginAttempts(0);
+    user.getSecurity().setBanned(false);
+    user.getSecurity().setBanDate(null);
+    user.getSecurity().setLoginAttempts(0);
     return user;
   }
 
   private User updateLoginDate(final User user) {
-    user.setLoginDate(TimeUtil.localDateTimeNow());
+    user.getSecurity().setLoginDate(TimeUtil.offsetDateTimeNow());
     return user;
   }
 

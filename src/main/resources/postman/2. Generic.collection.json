@@ -22,15 +22,15 @@
 				"method": "GET",
 				"header": [
 					{
-						"key": "x-aei-called-service",
-						"value": "generic-security",
+						"key": "app-called-service",
+						"value": "generic",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "{{securityUrl}}/users",
+					"raw": "{{appHttpUrl}}/users",
 					"host": [
-						"{{securityUrl}}"
+						"{{appHttpUrl}}"
 					],
 					"path": [
 						"users"
@@ -55,15 +55,15 @@
 				"method": "GET",
 				"header": [
 					{
-						"key": "x-aei-called-service",
-						"value": "generic-security",
+						"key": "app-called-service",
+						"value": "generic",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "{{securityUrl}}/users/id/:id",
+					"raw": "{{appHttpUrl}}/users/id/:id",
 					"host": [
-						"{{securityUrl}}"
+						"{{appHttpUrl}}"
 					],
 					"path": [
 						"users",
@@ -73,47 +73,6 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "1"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get User By Code",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{authToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [
-					{
-						"key": "x-aei-called-service",
-						"value": "generic-security",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{securityUrl}}/users/code/:code",
-					"host": [
-						"{{securityUrl}}"
-					],
-					"path": [
-						"users",
-						"code",
-						":code"
-					],
-					"variable": [
-						{
-							"key": "code",
 							"value": "5cc35df7-18b6-462a-8140-22b0db76c553"
 						}
 					]
@@ -137,15 +96,15 @@
 				"method": "GET",
 				"header": [
 					{
-						"key": "x-aei-called-service",
-						"value": "generic-security",
+						"key": "app-called-service",
+						"value": "generic",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "{{securityUrl}}/users/:username",
+					"raw": "{{appHttpUrl}}/users/:username",
 					"host": [
-						"{{securityUrl}}"
+						"{{appHttpUrl}}"
 					],
 					"path": [
 						"users",
@@ -177,14 +136,14 @@
 				"method": "POST",
 				"header": [
 					{
-						"key": "x-aei-called-service",
-						"value": "generic-security",
+						"key": "app-called-service",
+						"value": "generic",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"code\": \"5cc35df7-18b6-462a-8140-22b0db76c553\",\r\n    \"username\": \"keit\",\r\n    \"name\": \"Alberto\",\r\n    \"surname1\": \"Barral\",\r\n    \"surname2\": \"Tigeras\",\r\n    \"email\": \"keit@keit.com\",\r\n    \"password\": null,\r\n    \"phone\": \"123456789\",\r\n    \"location\": null,\r\n    \"registrationDate\": \"29/12/2002 07:00:00\",\r\n    \"verificationToken\": null,\r\n    \"enabled\": true,\r\n    \"loginDate\": null,\r\n    \"loginAttempts\": 0,\r\n    \"banned\": false,\r\n    \"banDate\": null,\r\n    \"banReason\": null,\r\n    \"roles\": [\r\n        {\r\n            \"code\": \"AD\",\r\n            \"name\": \"Admin\"\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -192,9 +151,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{securityUrl}}/users",
+					"raw": "{{appHttpUrl}}/users",
 					"host": [
-						"{{securityUrl}}"
+						"{{appHttpUrl}}"
 					],
 					"path": [
 						"users"
@@ -219,14 +178,14 @@
 				"method": "PUT",
 				"header": [
 					{
-						"key": "x-aei-called-service",
-						"value": "generic-security",
+						"key": "app-called-service",
+						"value": "generic",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"code\": \"5cc35df7-18b6-462a-8140-22b0db76c553\",\r\n    \"username\": \"keit\",\r\n    \"name\": \"Alberto\",\r\n    \"surname1\": \"Barral\",\r\n    \"surname2\": \"Tigeras\",\r\n    \"email\": \"keit@keit.com\",\r\n    \"password\": null,\r\n    \"phone\": \"123456789\",\r\n    \"location\": null,\r\n    \"registrationDate\": \"29/12/2002 07:00:00\",\r\n    \"verificationToken\": null,\r\n    \"enabled\": true,\r\n    \"loginDate\": null,\r\n    \"loginAttempts\": 0,\r\n    \"banned\": false,\r\n    \"banDate\": null,\r\n    \"banReason\": null,\r\n    \"roles\": [\r\n        {\r\n            \"code\": \"AD\",\r\n            \"name\": \"Admin\"\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -234,9 +193,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{securityUrl}}/users/id/:id/update",
+					"raw": "{{appHttpUrl}}/users/id/:id/update",
 					"host": [
-						"{{securityUrl}}"
+						"{{appHttpUrl}}"
 					],
 					"path": [
 						"users",
@@ -270,15 +229,15 @@
 				"method": "DELETE",
 				"header": [
 					{
-						"key": "x-aei-called-service",
-						"value": "generic-security",
+						"key": "app-called-service",
+						"value": "generic",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "{{securityUrl}}/users/id/:id",
+					"raw": "{{appHttpUrl}}/users/id/:id",
 					"host": [
-						"{{securityUrl}}"
+						"{{appHttpUrl}}"
 					],
 					"path": [
 						"users",
@@ -288,7 +247,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "1"
+							"value": "5cc35df7-18b6-462a-8140-22b0db76c553"
 						}
 					]
 				}
@@ -311,15 +270,15 @@
 				"method": "GET",
 				"header": [
 					{
-						"key": "x-aei-called-service",
-						"value": "generic-security",
+						"key": "app-called-service",
+						"value": "generic",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "{{securityUrl}}/roles",
+					"raw": "{{appHttpUrl}}/roles",
 					"host": [
-						"{{securityUrl}}"
+						"{{appHttpUrl}}"
 					],
 					"path": [
 						"roles"
@@ -344,15 +303,15 @@
 				"method": "GET",
 				"header": [
 					{
-						"key": "x-aei-called-service",
-						"value": "generic-security",
+						"key": "app-called-service",
+						"value": "generic",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "{{securityUrl}}/roles/code/:code",
+					"raw": "{{appHttpUrl}}/roles/code/:code",
 					"host": [
-						"{{securityUrl}}"
+						"{{appHttpUrl}}"
 					],
 					"path": [
 						"roles",

@@ -1,12 +1,12 @@
 package dev.barrikeit.util;
 
+import dev.barrikeit.util.constants.UtilConstants;
+import dev.barrikeit.util.exceptions.UnExpectedException;
 import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
-import dev.barrikeit.util.constants.UtilConstants;
-import dev.barrikeit.util.exceptions.UnExpectedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -23,62 +23,48 @@ public class TimeUtil {
     return Date.from(instantNow());
   }
 
-  public static LocalDate localDateNow() {
-    return instantNow().atZone(ZoneId.of(zone)).toLocalDate();
+  public static OffsetDateTime offsetDateTimeNow() {
+    return OffsetDateTime.now(ZoneId.of(zone));
   }
 
-  public static LocalDateTime localDateTimeNow() {
-    return instantNow().atZone(ZoneId.of(zone)).toLocalDateTime();
+  public static OffsetDateTime toOffsetDateTime(Date date) {
+    if (date == null) return null;
+    return date.toInstant().atZone(ZoneId.of(zone)).toOffsetDateTime();
   }
 
-  public static LocalDateTime toLocalDateTime(Date date) {
-    if (date == null) {
-      return null;
-    }
-    return date.toInstant().atZone(ZoneId.of(zone)).toLocalDateTime();
-  }
-
-  public static LocalDate convertLocalDate(String date) {
+  public static OffsetDateTime convertOffsetDateTime(String date) {
     DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(UtilConstants.PATTERN_LOCAL_DATE);
+    DateTimeFormatter dateTimeFormat =
+        DateTimeFormatter.ofPattern(UtilConstants.PATTERN_DATE_TIME).withZone(ZoneId.of(zone));
     try {
-      return LocalDate.parse(date, dateFormat);
-    } catch (DateTimeParseException e) {
-      throw new IllegalArgumentException("Formato de fecha y hora inválido: " + date);
-    }
-  }
-
-  public static LocalDateTime convertLocalDateTime(String date) {
-    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(UtilConstants.PATTERN_LOCAL_DATE);
-    DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern(UtilConstants.PATTERN_DATE_TIME);
-    try {
-      return LocalDateTime.parse(date, dateTimeFormat);
+      return OffsetDateTime.parse(date, dateTimeFormat);
     } catch (DateTimeParseException e) {
       try {
-        return LocalDateTime.of(LocalDate.parse(date, dateFormat), LocalTime.MIN);
+        return LocalDate.parse(date, dateFormat).atStartOfDay(ZoneId.of(zone)).toOffsetDateTime();
       } catch (DateTimeParseException ex) {
         throw new UnExpectedException("Formato de fecha y hora inválido: " + date);
       }
     }
   }
 
-  public static LocalDate timestampToLocalDate(Timestamp timestamp) {
-    return timestamp.toInstant().atZone(ZoneId.of(zone)).toLocalDateTime().toLocalDate();
+  public static OffsetDateTime timestampToOffsetDateTime(Timestamp timestamp) {
+    return timestamp.toInstant().atZone(ZoneId.of(zone)).toOffsetDateTime();
   }
 
-  public static LocalDateTime castToLocalDateTime(Timestamp timestamp) {
-    return timestamp.toInstant().atZone(ZoneId.of(zone)).toLocalDateTime();
+  public static String formatOffsetDate(OffsetDateTime date) {
+    return date.format(DateTimeFormatter.ofPattern(UtilConstants.PATTERN_LOCAL_DATE));
   }
 
-  public static String formatLocalDate(LocalDate date) {
-    DateTimeFormatter dateFormatter =
-        DateTimeFormatter.ofPattern(UtilConstants.PATTERN_LOCAL_DATE_DOWNLOAD);
-    return date.format(dateFormatter);
+  public static String formatOffsetDateDownload(OffsetDateTime date) {
+    return date.format(DateTimeFormatter.ofPattern(UtilConstants.PATTERN_LOCAL_DATE_DOWNLOAD));
   }
 
-  public static String formatLocalDateTime(LocalDateTime date) {
-    DateTimeFormatter dateTimeFormatter =
-        DateTimeFormatter.ofPattern(UtilConstants.PATTERN_DATE_TIME_DOWNLOAD);
-    return date.format(dateTimeFormatter);
+  public static String formatOffsetDateTime(OffsetDateTime date) {
+    return date.format(DateTimeFormatter.ofPattern(UtilConstants.PATTERN_DATE_TIME_MILLI));
+  }
+
+  public static String formatOffsetDateTimeDownload(OffsetDateTime date) {
+    return date.format(DateTimeFormatter.ofPattern(UtilConstants.PATTERN_DATE_TIME_DOWNLOAD));
   }
 
   @Value("${server.timeZone}")

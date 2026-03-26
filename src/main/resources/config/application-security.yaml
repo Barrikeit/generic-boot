@@ -4,7 +4,7 @@ security:
   cors:
     allowed:
       origins: http://localhost:9891,http://localhost:4200
-      methods: GET,HEAD,POST,PUT,DELETE
+      methods: GET,HEAD,POST,PUT,DELETE,OPTIONS
       headers: "Authorization,content-type,app-called-service,access-token,refresh-token"
     enabled: true
     path:

@@ -21,7 +21,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @Entity
 @Table(name = EntityConstants.MODULES)
-public class Module extends GenericCodeEntity<Integer, String> {
+public class Module extends GenericCodeEntity<Long, String> {
 
   @Size(max = 200)
   @NotNull

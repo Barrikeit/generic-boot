@@ -14,7 +14,7 @@
 					"script": {
 						"exec": [
 							"var responseData = JSON.parse(pm.response.text()).content;\r",
-							"pm.globals.set(\"authToken\", responseData.jwt);\r",
+							"pm.globals.set(\"authToken\", responseData.token);\r",
 							"pm.globals.set(\"refreshToken\", responseData.refreshToken);"
 						],
 						"type": "text/javascript",
@@ -25,7 +25,7 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
-							"pm.globals.set(\"securityUrl\", pm.environment.get(\"baseUrl\") + pm.environment.get(\"port\") + pm.environment.get(\"apiVersion\"));\r",
+							"pm.globals.set(\"appHttpUrl\", pm.environment.get(\"baseUrl\") + pm.environment.get(\"port\") + pm.environment.get(\"apiPath\"));\r",
 							"\r",
 							"var requestBody = JSON.parse(pm.request.body);\r",
 							"pm.environment.set(\"username\", requestBody.username);\r",
@@ -40,8 +40,8 @@
 				"method": "POST",
 				"header": [
 					{
-						"key": "x-aei-called-service",
-						"value": "generic-security",
+						"key": "app-called-service",
+						"value": "generic",
 						"type": "text"
 					}
 				],
@@ -55,9 +55,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}{{port}}{{apiVersion}}/auth/login",
+					"raw": "{{baseUrl}}{{port}}{{contextPath}}{{apiPath}}/auth/login",
 					"host": [
-						"{{baseUrl}}{{port}}{{apiVersion}}"
+						"{{baseUrl}}{{port}}{{contextPath}}{{apiPath}}"
 					],
 					"path": [
 						"auth",
@@ -96,8 +96,8 @@
 				"method": "POST",
 				"header": [
 					{
-						"key": "x-aei-called-service",
-						"value": "generic-security",
+						"key": "app-called-service",
+						"value": "generic",
 						"type": "text"
 					}
 				],
@@ -111,9 +111,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}{{port}}{{apiVersion}}/auth/register",
+					"raw": "{{baseUrl}}{{port}}{{contextPath}}{{apiPath}}/auth/register",
 					"host": [
-						"{{baseUrl}}{{port}}{{apiVersion}}"
+						"{{baseUrl}}{{port}}{{contextPath}}{{apiPath}}"
 					],
 					"path": [
 						"auth",
@@ -151,8 +151,8 @@
 				"method": "PUT",
 				"header": [
 					{
-						"key": "x-aei-called-service",
-						"value": "generic-security",
+						"key": "app-called-service",
+						"value": "generic",
 						"type": "text"
 					}
 				],
@@ -166,9 +166,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}{{port}}{{apiVersion}}/auth/verify?t={{verificationToken}}",
+					"raw": "{{baseUrl}}{{port}}{{contextPath}}{{apiPath}}/auth/verify?t={{verificationToken}}",
 					"host": [
-						"{{baseUrl}}{{port}}{{apiVersion}}"
+						"{{baseUrl}}{{port}}{{contextPath}}{{apiPath}}"
 					],
 					"path": [
 						"auth",
@@ -192,7 +192,7 @@
 					"script": {
 						"exec": [
 							"var responseData = JSON.parse(pm.response.text()).content;\r",
-							"pm.globals.set(\"authToken\", responseData.jwt);\r",
+							"pm.globals.set(\"authToken\", responseData.token);\r",
 							"pm.globals.set(\"refreshToken\", responseData.refreshToken);"
 						],
 						"type": "text/javascript",
@@ -216,8 +216,8 @@
 				"method": "POST",
 				"header": [
 					{
-						"key": "x-aei-called-service",
-						"value": "generic-security",
+						"key": "app-called-service",
+						"value": "generic",
 						"type": "text"
 					}
 				],
@@ -231,9 +231,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}{{port}}{{apiVersion}}/auth/login",
+					"raw": "{{baseUrl}}{{port}}{{contextPath}}{{apiPath}}/auth/login",
 					"host": [
-						"{{baseUrl}}{{port}}{{apiVersion}}"
+						"{{baseUrl}}{{port}}{{contextPath}}{{apiPath}}"
 					],
 					"path": [
 						"auth",
@@ -272,8 +272,8 @@
 				"method": "POST",
 				"header": [
 					{
-						"key": "x-aei-called-service",
-						"value": "generic-security",
+						"key": "app-called-service",
+						"value": "generic",
 						"type": "text"
 					}
 				],
@@ -287,9 +287,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}{{port}}{{apiVersion}}/auth/logout",
+					"raw": "{{baseUrl}}{{port}}{{contextPath}}{{apiPath}}/auth/logout",
 					"host": [
-						"{{baseUrl}}{{port}}{{apiVersion}}"
+						"{{baseUrl}}{{port}}{{contextPath}}{{apiPath}}"
 					],
 					"path": [
 						"auth",
@@ -330,8 +330,8 @@
 				"method": "GET",
 				"header": [
 					{
-						"key": "x-aei-called-service",
-						"value": "generic-security",
+						"key": "app-called-service",
+						"value": "generic",
 						"type": "text"
 					}
 				],
@@ -345,9 +345,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}{{port}}{{apiVersion}}/version",
+					"raw": "{{baseUrl}}{{port}}{{contextPath}}{{apiPath}}/version",
 					"host": [
-						"{{baseUrl}}{{port}}{{apiVersion}}"
+						"{{baseUrl}}{{port}}{{contextPath}}{{apiPath}}"
 					],
 					"path": [
 						"version"

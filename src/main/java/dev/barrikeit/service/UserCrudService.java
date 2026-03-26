@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
 @Service
-public class UserCrudService extends GenericCrudService<User, Long, UUID, UserDto> {
+public class UserCrudService extends GenericCrudService<User, UUID, UserDto> {
   private final UserRepository repository;
   private final UserMapper mapper;
 
@@ -62,8 +62,8 @@ public class UserCrudService extends GenericCrudService<User, Long, UUID, UserDt
     user.setUsername(dto.getUsername());
     user.setPassword(passwordEncoder.encode(dto.getPassword()));
     mapper.updateEntity(dto, user);
-    user.setRegistrationDate(TimeUtil.localDateTimeNow());
-    user.setVerificationToken(RandomUtil.getRandomBase64EncodedString(14));
+    user.getSecurity().setRegistrationDate(TimeUtil.offsetDateTimeNow());
+    user.getSecurity().setVerificationToken(RandomUtil.getRandomBase64EncodedString(14));
 
     user = repository.save(user);
     UserDto registeredUserDto = mapper.toDto(user);
@@ -73,7 +73,7 @@ public class UserCrudService extends GenericCrudService<User, Long, UUID, UserDt
 
   @Override
   @Transactional
-  public UserDto updateByCode(UUID code, UserDto dto) {
+  public UserDto update(UUID code, UserDto dto) {
     validateToggleActivationUser(dto, true);
     User user = validateUserToCreateUpdate(dto, false);
     generateUserForCreateUpdate(dto, user);
@@ -89,14 +89,15 @@ public class UserCrudService extends GenericCrudService<User, Long, UUID, UserDt
   public UserDto toggleEnableUser(UserDto dto) {
     validateToggleActivationUser(dto, false);
     User user = validateUserToCreateUpdate(dto, false);
-    user.setEnabled(!dto.isEnabled());
-    user.setBanned(dto.isBanned());
-    user.setBanReason(dto.getBanReason());
+    user.getSecurity().setEnabled(!dto.getSecurity().isEnabled());
+    user.getSecurity().setBanned(dto.getSecurity().isBanned());
+    user.getSecurity().setBanReason(dto.getSecurity().getBanReason());
 
     repository.save(user);
     UserDto modifiedUserDto = mapper.toDto(user);
     EmailUtil.sendEmail(
-        modifiedUserDto, !dto.isEnabled() ? EmailType.ENABLED_USER : EmailType.DISABLED_USER);
+        modifiedUserDto,
+        !dto.getSecurity().isEnabled() ? EmailType.ENABLED_USER : EmailType.DISABLED_USER);
     return modifiedUserDto;
   }
 
@@ -108,9 +109,7 @@ public class UserCrudService extends GenericCrudService<User, Long, UUID, UserDt
 
   private User validateUsername(UserDto dto, boolean isCreate) {
     User user = repository.findByUsernameEqualsIgnoreCase(dto.getUsername()).orElse(new User());
-    if (isCreate && user.isNew()) {
-      user.setCode(UUID.randomUUID());
-    } else if (isCreate && !user.isNew()) {
+    if (isCreate && !user.isNew()) {
       throw new BadRequestException(
           ExceptionConstants.ERROR_USER_NAME_ALREADY_EXISTS, dto.getUsername());
     } else if (!isCreate && user.isNew()) {
@@ -160,7 +159,8 @@ public class UserCrudService extends GenericCrudService<User, Long, UUID, UserDt
     String authenticatedUser = authentication.getName();
 
     if (dto.getUsername().equals(authenticatedUser)
-        && ((isUpdate && !dto.isEnabled()) || (!isUpdate && dto.isEnabled()))) {
+        && ((isUpdate && !dto.getSecurity().isEnabled())
+            || (!isUpdate && dto.getSecurity().isEnabled()))) {
       throw new BadRequestException(
           ExceptionConstants.ERROR_USER_DEACTIVATE_HIMSELF, dto.getUsername());
     }

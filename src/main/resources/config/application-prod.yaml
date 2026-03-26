@@ -2,6 +2,10 @@ spring:
   config:
     activate:
       on-profile: prod
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
 server:
   servlet:
     context-path: /

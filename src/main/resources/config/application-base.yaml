@@ -26,6 +26,10 @@ spring:
         default_schema: generic # or set the search_path in the database for the user
         generate_statistics: false
         enable_lazy_load_no_trans: true
+        id:
+          optimizer:
+            pooled:
+              preferred: none
   session:
     store-type: jdbc
     jdbc:

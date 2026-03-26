@@ -2,6 +2,18 @@ spring:
   config:
     activate:
       on-profile: dev
+  jpa:
+    properties:
+      hibernate:
+        show_sql: false
 server:
   servlet:
     context-path: /@app.name@
+
+security:
+  cors:
+    allowed:
+      origins: http://localhost:9891,http://localhost:4200,http://localhost:63342
+  jwt:
+    expiration: 86400
+    expiration-refresh: 86400

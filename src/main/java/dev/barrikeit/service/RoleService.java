@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Log4j2
 @Service
-public class RoleService extends GenericCodeService<Role, Integer, String, RoleDto> {
+public class RoleService extends GenericCodeService<Role, Long, String, RoleDto> {
   private final RoleRepository repository;
   private final RoleMapper mapper;
 

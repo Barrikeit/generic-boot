@@ -2,7 +2,12 @@
 	"id": "5441984a-75aa-426e-857c-4c06a17efa56",
 	"values": [
 		{
-			"key": "securityUrl",
+			"key": "appHttpUrl",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "appWsUrl",
 			"value": "",
 			"enabled": true
 		},

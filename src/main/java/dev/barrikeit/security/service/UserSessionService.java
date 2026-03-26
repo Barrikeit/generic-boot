@@ -5,7 +5,7 @@ import dev.barrikeit.security.model.repository.UserSessionRepository;
 import dev.barrikeit.security.util.TokenType;
 import dev.barrikeit.util.constants.ExceptionConstants;
 import dev.barrikeit.util.exceptions.NotFoundException;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -19,16 +19,15 @@ public class UserSessionService {
   private final UserSessionRepository repository;
 
   public void createSession(
-      UUID userCode,
+      UUID userId,
       String jti,
       String jtiPair,
-      LocalDateTime issuedAt,
-      LocalDateTime expiresAt,
+      OffsetDateTime issuedAt,
+      OffsetDateTime expiresAt,
       String tokenType) {
-
     repository.save(
         UserSession.builder()
-            .userCode(userCode)
+            .userId(userId)
             .jti(jti)
             .jtiPair(jtiPair)
             .issuedAt(issuedAt)
@@ -37,36 +36,36 @@ public class UserSessionService {
             .build());
   }
 
-  public List<UserSession> findUserSessions(UUID userCode) {
-    return repository.findAllByUserCode(userCode);
+  public List<UserSession> findUserSessions(UUID userId) {
+    return repository.findAllByUserId(userId);
   }
 
-  public UserSession findSession(UUID userCode, String jti) {
+  public UserSession findSession(UUID userId, String jti) {
     return repository
-        .findByUserCodeAndJti(userCode, jti)
+        .findByUserIdAndJti(userId, jti)
         .orElseThrow(() -> new NotFoundException(ExceptionConstants.ERROR_NOT_FOUND, jti));
   }
 
-  public boolean validateToken(UUID userCode, String jti) {
-    return repository.existsByUserCodeAndJti(userCode, jti);
+  public boolean validateToken(UUID userId, String jti) {
+    return repository.existsByUserIdAndJti(userId, jti);
   }
 
-  public long activeSessions(UUID userCode, TokenType tokenType) {
-    return repository.countByUserCodeAndTokenType(userCode, tokenType.name());
+  public long activeSessions(UUID userId, TokenType tokenType) {
+    return repository.countByUserIdAndTokenType(userId, tokenType.name());
   }
 
   @Transactional
-  public void revokeTokenPair(UUID userCode, String jti) {
+  public void revokeTokenPair(UUID userId, String jti) {
     UserSession session =
         repository
-            .findByUserCodeAndJti(userCode, jti)
+            .findByUserIdAndJti(userId, jti)
             .orElseThrow(() -> new NotFoundException(ExceptionConstants.ERROR_NOT_FOUND, jti));
 
-    repository.deleteByUserCodeAndJti(userCode, session.getJti());
-    repository.deleteByUserCodeAndJti(userCode, session.getJtiPair());
+    repository.deleteByUserIdAndJti(userId, session.getJti());
+    repository.deleteByUserIdAndJti(userId, session.getJtiPair());
   }
 
-  public void revokeAll(UUID userCode) {
-    repository.deleteByUserCode(userCode);
+  public void revokeAll(UUID userId) {
+    repository.deleteByUserId(userId);
   }
 }

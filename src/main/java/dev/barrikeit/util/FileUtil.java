@@ -1,5 +1,7 @@
 package dev.barrikeit.util;
 
+import dev.barrikeit.util.exceptions.BadRequestException;
+import dev.barrikeit.util.exceptions.NotFoundException;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -18,8 +20,6 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import dev.barrikeit.util.exceptions.BadRequestException;
-import dev.barrikeit.util.exceptions.NotFoundException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,7 +44,7 @@ public class FileUtil {
     File temp = null;
     try {
       fileName = sanitizeFileName(fileName);
-      String time = TimeUtil.formatLocalDateTime(TimeUtil.localDateTimeNow());
+      String time = TimeUtil.formatOffsetDateTimeDownload(TimeUtil.offsetDateTimeNow());
       temp = File.createTempFile("temp_" + fileName + "_" + time + "_", extension);
       temp.deleteOnExit();
     } catch (IOException e) {

@@ -21,7 +21,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 @Entity
 @Table(name = EntityConstants.LOCATIONS)
-public class Location extends GenericCodeEntity<Integer, String> {
+public class Location extends GenericCodeEntity<Long, String> {
 
   @NotNull
   @Size(max = 255)

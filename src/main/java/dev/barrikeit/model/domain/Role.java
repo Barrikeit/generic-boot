@@ -26,7 +26,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @Entity
 @Table(name = EntityConstants.ROLES)
-public class Role extends GenericCodeEntity<Integer, String> {
+public class Role extends GenericCodeEntity<Long, String> {
 
   @NotNull
   @Size(max = 50)
