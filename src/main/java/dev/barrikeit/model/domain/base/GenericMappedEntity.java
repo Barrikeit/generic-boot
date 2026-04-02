@@ -48,6 +48,6 @@ public abstract class GenericMappedEntity<I extends Serializable, O extends Base
 
   @Override
   public boolean isNew() {
-    return id == null;
+    return getId() == null;
   }
 }

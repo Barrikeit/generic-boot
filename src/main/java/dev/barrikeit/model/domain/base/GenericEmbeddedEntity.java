@@ -41,6 +41,6 @@ public abstract class GenericEmbeddedEntity<I extends Serializable> extends Base
 
   @Override
   public boolean isNew() {
-    return id == null;
+    return getId() == null;
   }
 }
