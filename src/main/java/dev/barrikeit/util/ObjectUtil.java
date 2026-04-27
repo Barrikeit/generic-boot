@@ -2,7 +2,7 @@ package dev.barrikeit.util;
 
 import dev.barrikeit.model.domain.base.GenericEntity;
 import dev.barrikeit.service.dto.base.BaseDto;
-import dev.barrikeit.util.exceptions.UnExpectedException;
+import dev.barrikeit.util.exceptions.UnexpectedException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -45,7 +45,7 @@ public class ObjectUtil {
     } else if ("false".equals(normalized) || "0".equals(normalized)) {
       return false;
     }
-    throw new UnExpectedException("Unsupported cast type: {}", value);
+    throw new UnexpectedException("Unsupported cast type: {}", value);
   }
 
   /**
@@ -55,7 +55,7 @@ public class ObjectUtil {
    * @param targetType La clase del tipo al cual se desea convertir el valor.
    * @param <M> El tipo genérico al cual se realiza la conversión.
    * @return El valor convertido al tipo especificado, o `null` si el valor original es `null`.
-   * @throws UnExpectedException Si ocurre un error en la conversión o si el tipo no es soportado.
+   * @throws UnexpectedException Si ocurre un error en la conversión o si el tipo no es soportado.
    */
   @SuppressWarnings("unchecked")
   public static <M> M castFieldToType(Object value, Class<M> targetType) {
@@ -99,9 +99,9 @@ public class ObjectUtil {
         if (value instanceof OffsetDateTime odt) return (M) odt.toLocalDateTime();
       }
     } catch (Exception e) {
-      throw new UnExpectedException(
+      throw new UnexpectedException(
           "Failed to cast value: {} to type: {}", value, targetType.getName());
     }
-    throw new UnExpectedException("Unsupported cast type: {}", targetType.getName());
+    throw new UnexpectedException("Unsupported cast type: {}", targetType.getName());
   }
 }

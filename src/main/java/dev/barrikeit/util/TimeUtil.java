@@ -1,7 +1,7 @@
 package dev.barrikeit.util;
 
 import dev.barrikeit.util.constants.UtilConstants;
-import dev.barrikeit.util.exceptions.UnExpectedException;
+import dev.barrikeit.util.exceptions.UnexpectedException;
 import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -42,7 +42,7 @@ public class TimeUtil {
       try {
         return LocalDate.parse(date, dateFormat).atStartOfDay(ZoneId.of(zone)).toOffsetDateTime();
       } catch (DateTimeParseException ex) {
-        throw new UnExpectedException("Formato de fecha y hora inválido: " + date);
+        throw new UnexpectedException("Formato de fecha y hora inválido: " + date);
       }
     }
   }

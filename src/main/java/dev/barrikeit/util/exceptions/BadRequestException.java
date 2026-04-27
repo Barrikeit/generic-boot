@@ -1,18 +1,12 @@
 package dev.barrikeit.util.exceptions;
 
-import java.net.URI;
-import dev.barrikeit.util.constants.ExceptionConstants;
-import org.springframework.http.HttpStatus;
-
-public class BadRequestException extends GenericException {
-
-  static final URI TYPE = URI.create("");
+public class BadRequestException extends BaseException {
 
   public BadRequestException(String message) {
-    super(HttpStatus.BAD_REQUEST, message);
+    super(message);
   }
 
   public BadRequestException(String message, Object... messageArgs) {
-    super(HttpStatus.BAD_REQUEST, TYPE, ExceptionConstants.BAD_REQUEST, message, messageArgs);
+    super(message, messageArgs);
   }
 }
