@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
@@ -29,33 +28,13 @@ import org.springframework.web.context.request.WebRequest;
  * Single point that translates every uncaught exception into a consistent RFC 9457 {@link
  * ProblemDetail} JSON response.
  *
- * <h3>Logging strategy</h3>
- *
- * <ul>
- *   <li>{@link BaseException} — logged at WARN. These are expected business errors (not found,
- *       conflict, bad input). If the developer needed a full stack trace at the throw site, they
- *       used {@code Exceptions.logged()} before throwing.
- *   <li>Security exceptions (401/403) — logged at WARN. Expected access control behavior, not
- *       application bugs.
- *   <li>Validation exceptions — logged at WARN. Client sent bad data.
- *   <li>Spring {@link ErrorResponseException} — logged at WARN. Framework detected something wrong
- *       with the request.
- *   <li>Catch-all {@link Exception} — logged at SEVERE with full stack trace. This is genuinely
- *       unexpected and needs investigation.
- * </ul>
- *
- * <h3>BaseException detail resolution</h3>
- *
- * <ul>
- *   <li>Message starts with {@code "exception."} → resolved as i18n key via {@code MessageSource},
- *       with the exception's arguments.
- *   <li>Otherwise → plain string, formatted with arguments via {@code String.format} if present.
- * </ul>
+ * <p>Every handler logs the exception at ERROR with cause, message, and full stack trace — this is
+ * the single authoritative log entry for the exception. The {@code LoggingAspect} only traces
+ * entry/exit at DEBUG and does not log exceptions.
  */
+@Slf4j
 @RestControllerAdvice
 public class ExceptionController {
-
-  private static final Logger log = Logger.getLogger(ExceptionController.class.getName());
 
   private static final Map<String, HttpStatus> STATUS_MAP =
       Map.ofEntries(
@@ -76,7 +55,7 @@ public class ExceptionController {
 
   @ExceptionHandler(BaseException.class)
   public ResponseEntity<ProblemDetail> handleBaseException(BaseException ex, Locale locale) {
-    log.warning(() -> ex.getClass().getSimpleName() + ": " + ex.getFormattedMessage());
+    logException("BaseException", ex);
 
     HttpStatus status = resolveStatus(ex);
     String title = resolveTitle(ex, locale);
@@ -92,7 +71,7 @@ public class ExceptionController {
   @ExceptionHandler(AuthenticationException.class)
   public ResponseEntity<ProblemDetail> handleAuthentication(
       AuthenticationException ex, Locale locale) {
-    log.warning(() -> "Authentication failed: " + ex.getMessage());
+    logException("AuthenticationException", ex);
 
     ProblemDetail problem =
         ProblemDetail.forStatusAndDetail(
@@ -106,7 +85,7 @@ public class ExceptionController {
 
   @ExceptionHandler(AccessDeniedException.class)
   public ResponseEntity<ProblemDetail> handleAccessDenied(AccessDeniedException ex, Locale locale) {
-    log.warning(() -> "Access denied: " + ex.getMessage());
+    logException("AccessDeniedException", ex);
 
     ProblemDetail problem =
         ProblemDetail.forStatusAndDetail(
@@ -120,7 +99,7 @@ public class ExceptionController {
 
   @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class})
   public ResponseEntity<ProblemDetail> handleValidation(Exception ex, WebRequest request) {
-    log.warning(() -> "Validation error: " + ex.getMessage());
+    logException("ValidationException", ex);
 
     Locale locale = request.getLocale();
     List<Map<String, String>> fieldErrors = new ArrayList<>();
@@ -160,7 +139,7 @@ public class ExceptionController {
 
   @ExceptionHandler(ErrorResponseException.class)
   public ResponseEntity<ProblemDetail> handleSpringError(ErrorResponseException ex, Locale locale) {
-    log.warning(() -> "ErrorResponseException: " + ex.getMessage());
+    logException("ErrorResponseException", ex);
 
     ProblemDetail problem = ex.getBody();
     problem.setTitle(resolveMessage(problem.getTitle(), locale, problem.getTitle()));
@@ -176,8 +155,7 @@ public class ExceptionController {
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ProblemDetail> handleUnexpected(Exception ex, Locale locale) {
-    // Full stack trace — this is a bug, needs investigation
-    log.log(Level.SEVERE, "Unhandled exception: " + ex.getMessage(), ex);
+    logException("UnhandledException", ex);
 
     ProblemDetail problem =
         ProblemDetail.forStatusAndDetail(
@@ -187,6 +165,19 @@ public class ExceptionController {
     problem.setType(URI.create("urn:error:internal"));
 
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(problem);
+  }
+
+  /**
+   * Single logging method — every handler delegates here. Produces one ERROR entry with cause,
+   * message, and full stack trace.
+   */
+  private void logException(String handler, Throwable ex) {
+    log.error(
+        "{} with cause = '{}' and exception = '{}'",
+        handler,
+        ex.getCause() != null ? ex.getCause() : "NULL",
+        ex.getMessage(),
+        ex);
   }
 
   private HttpStatus resolveStatus(BaseException ex) {
@@ -199,8 +190,8 @@ public class ExceptionController {
   }
 
   /**
-   * i18n key → MessageSource with args plain str → String.format with args (if any) plain str →
-   * as-is
+   * i18n key → MessageSource with args plain str → MessageFormat/String.format with args plain str
+   * → as-is
    */
   private String resolveDetail(BaseException ex, Locale locale) {
     String raw = ex.getMessage();
@@ -212,13 +203,13 @@ public class ExceptionController {
       try {
         return messageSource.getMessage(raw, args, locale);
       } catch (NoSuchMessageException e) {
-        log.warning(() -> "Missing i18n key: " + raw);
+        log.warn("Missing i18n key: {}", raw);
         return raw;
       }
     }
 
     if (args != null && args.length > 0) {
-      return ex.getFormattedMessage();
+      return BaseException.formatMessage(raw, args);
     }
 
     return raw;
