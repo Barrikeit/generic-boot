@@ -11,7 +11,8 @@ security:
       pattern: /**
   jwt:
     issuer: keit
-    secret: keit_secret
+    # Override with JWT_SECRET env var in production; fallback is dev-only and must not reach prod
+    secret: ${JWT_SECRET:keit_secret}
     expiration: 600 # 10 mins
     expiration-refresh: 900 # 15 mins
   app-validator-filter:

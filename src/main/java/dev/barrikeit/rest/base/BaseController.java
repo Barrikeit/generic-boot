@@ -1,12 +1,12 @@
 package dev.barrikeit.rest.base;
 
+import dev.barrikeit.model.domain.base.BaseEntity;
+import dev.barrikeit.service.base.BaseService;
+import dev.barrikeit.service.dto.base.BaseDto;
 import java.io.Serializable;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import dev.barrikeit.model.domain.base.BaseEntity;
-import dev.barrikeit.service.base.BaseService;
-import dev.barrikeit.service.dto.base.BaseDto;
 
 /**
  * <b>Base Controller Class</b>

@@ -1,13 +1,14 @@
 package dev.barrikeit.rest.base;
 
-import jakarta.validation.Valid;
-import java.io.Serializable;
-import lombok.extern.log4j.Log4j2;
 import dev.barrikeit.model.domain.base.BaseEntity;
 import dev.barrikeit.service.base.FilterBaseService;
 import dev.barrikeit.service.dto.base.BaseDto;
 import dev.barrikeit.service.filter.base.BaseFilter;
 import dev.barrikeit.util.validation.SearchParams;
+import jakarta.validation.Valid;
+import java.io.Serializable;
+import java.util.Map;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -46,6 +47,13 @@ public abstract class FilterBaseController<
   public Response<Page<D>> findAllFiltered(
       @PageableDefault(size = 20) Pageable page,
       @RequestParam(required = false, defaultValue = "") @Valid @SearchParams String search) {
-    return Response.ok(null, filterService.search(page, search));
+    Page<D> result = filterService.search(page, search);
+    Map<String, Object> meta = Map.of(
+        "page", result.getNumber(),
+        "size", result.getSize(),
+        "totalElements", result.getTotalElements(),
+        "totalPages", result.getTotalPages()
+    );
+    return Response.ok(result, meta);
   }
 }

@@ -1,10 +1,10 @@
 package dev.barrikeit.rest.base;
 
-import java.io.Serializable;
-import lombok.extern.log4j.Log4j2;
 import dev.barrikeit.model.domain.base.GenericEntity;
 import dev.barrikeit.service.base.GenericService;
 import dev.barrikeit.service.dto.base.BaseDto;
+import java.io.Serializable;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * <b>Generic Controller Class</b>

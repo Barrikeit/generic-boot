@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Log4j2
 @RestController
 @RequestMapping("/roles")
-public class RoleController extends GenericCodeController<Role, Long, String, RoleDto> {
+public class RoleController extends GenericCodeController<Role, Long, String, RoleDto>
+    implements RoleApi {
 
   private final RoleService service;
 

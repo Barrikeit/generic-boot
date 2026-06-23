@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Log4j2
 @RestController
 @RequestMapping("/users")
-public class UserFilterController extends FilterBaseController<User, UUID, UserDto, UserFilter> {
+public class UserFilterController extends FilterBaseController<User, UUID, UserDto, UserFilter>
+    implements UserFilterApi {
 
   private final UserFilterService service;
 

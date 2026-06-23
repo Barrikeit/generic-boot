@@ -1,10 +1,10 @@
 package dev.barrikeit.rest.base;
 
-import java.io.Serializable;
-import lombok.extern.log4j.Log4j2;
 import dev.barrikeit.model.domain.base.GenericCodeEntity;
 import dev.barrikeit.service.base.GenericCodeCrudService;
 import dev.barrikeit.service.dto.base.BaseDto;
+import java.io.Serializable;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,7 +26,7 @@ public abstract class GenericCodeCrudController<
         I extends Serializable,
         C extends Serializable,
         D extends BaseDto>
-    extends GenericCodeController<E, I, C, D> {
+    extends GenericCodeController<E, I, C, D> implements GenericCodeCrudApi<C, D> {
 
   private final GenericCodeCrudService<E, I, C, D> crudService;
 
@@ -56,6 +56,6 @@ public abstract class GenericCodeCrudController<
   @DeleteMapping("/code/{code}")
   public Response<Void> deleteByCode(@PathVariable("code") C code) {
     crudService.deleteByCode(code);
-    return Response.ok("Eliminado con éxito", null);
+    return Response.noContent("Eliminado con éxito");
   }
 }

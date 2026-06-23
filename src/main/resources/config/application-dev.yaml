@@ -8,7 +8,7 @@ spring:
         show_sql: false
 server:
   servlet:
-    context-path: /@app.name@
+    context-path: /${app.name:generic-boot}
 
 security:
   cors:

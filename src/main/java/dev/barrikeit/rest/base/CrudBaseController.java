@@ -1,10 +1,10 @@
 package dev.barrikeit.rest.base;
 
-import java.io.Serializable;
-import lombok.extern.log4j.Log4j2;
 import dev.barrikeit.model.domain.base.BaseEntity;
 import dev.barrikeit.service.base.CrudBaseService;
 import dev.barrikeit.service.dto.base.BaseDto;
+import java.io.Serializable;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * <b>CRUD Base Controller Class</b>
@@ -56,6 +56,6 @@ public abstract class CrudBaseController<
    */
   public Response<Void> delete(I id) {
     crudService.delete(id);
-    return Response.ok("Eliminado con éxito", null);
+    return Response.noContent("Eliminado con éxito");
   }
 }

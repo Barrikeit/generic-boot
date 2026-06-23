@@ -6,7 +6,7 @@
         <Property name="APP_BUILD">${spring:application.build}</Property>
         <Property name="LOG_PATH">${spring:logging.file.path}</Property>
         <Property name="LOG_PATTERN">
-            %style{%date{yyyy-MM-dd HH:mm:ss.SSS}}{blue} [%style{Host}{green}] %highlight{%-5level}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green, DEBUG=blue} --- [%thread{20}] %style{%-20logger}{cyan} - %message%n
+            %style{%date{yyyy-MM-dd HH:mm:ss.SSS}}{blue} [%style{Host}{green}] %highlight{%-5level}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green, DEBUG=blue} --- [%thread{20}] [%X{requestId:-no-req-id}] %style{%-20logger}{cyan} - %message%n
         </Property>
     </Properties>
     <Appenders>

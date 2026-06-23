@@ -1,8 +1,8 @@
 application:
-  name: @app.name@
-  version: @app.version@
-  build: @app.build@
-  buildTime: @app.buildTime@
+  name: ${app.name:generic-boot}
+  version: ${app.version:0.1.0-SNAPSHOT}
+  build: ${app.build:local}
+  buildTime: ${app.buildTime:local}
 
 server:
   port: 9891
@@ -17,23 +17,44 @@ server:
       force-response: true
 
 spring:
-  application.name: @app.name@
+  application.name: ${app.name:generic-boot}
   profiles:
-    active: @spring.profiles.active@
+    default: dev
   config:
     import:
+      - optional:classpath:build.properties
       - application-base.yaml
       - application-flyway.yaml
       - application-security.yaml
-      - optional:application-@spring.profiles.active@.yaml
+      - optional:application-${spring.profiles.active}.yaml
 
 logging:
   file:
     path: dist/logs
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: when-authorized
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: ${application.name}
+    version: ${application.version}
+    build: ${application.build}
+
 springdoc:
   api-docs.path: /public/api-docs
-  packagesToScan: dev.barrikeit.rest
+  packagesToScan: dev.barrikeit.rest,dev.barrikeit.security.rest
   show-actuator: false
   swagger-ui:
     display-request-duration: true

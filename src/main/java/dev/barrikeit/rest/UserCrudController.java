@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Log4j2
 @RestController
 @RequestMapping("/users")
-public class UserCrudController extends GenericController<User, UUID, UserDto> {
+public class UserCrudController extends GenericController<User, UUID, UserDto>
+    implements UserCrudApi {
 
   private final UserCrudService service;
 
@@ -38,6 +39,7 @@ public class UserCrudController extends GenericController<User, UUID, UserDto> {
     return Response.ok(service.find(id));
   }
 
+  @Override
   @GetMapping("/{username}")
   public Response<UserDto> findByUsername(@PathVariable("username") String username) {
     return Response.ok(service.findByUsername(username));

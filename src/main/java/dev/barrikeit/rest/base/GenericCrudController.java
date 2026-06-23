@@ -1,11 +1,11 @@
 package dev.barrikeit.rest.base;
 
-import jakarta.validation.Valid;
-import java.io.Serializable;
-import lombok.extern.log4j.Log4j2;
 import dev.barrikeit.model.domain.base.GenericEntity;
 import dev.barrikeit.service.base.GenericCrudService;
 import dev.barrikeit.service.dto.base.BaseDto;
+import jakarta.validation.Valid;
+import java.io.Serializable;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Log4j2
 public abstract class GenericCrudController<
         E extends GenericEntity<I>, I extends Serializable, D extends BaseDto>
-    extends GenericController<E, I, D> {
+    extends GenericController<E, I, D> implements GenericCrudApi<I, D> {
 
   private final GenericCrudService<E, I, D> crudService;
 
@@ -65,6 +65,6 @@ public abstract class GenericCrudController<
   @DeleteMapping("/id/{id}")
   public Response<Void> delete(@PathVariable("id") I id) {
     crudService.delete(id);
-    return Response.ok("Eliminado con éxito", null);
+    return Response.noContent("Eliminado con éxito");
   }
 }
