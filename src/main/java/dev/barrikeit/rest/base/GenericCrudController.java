@@ -1,8 +1,8 @@
 package dev.barrikeit.rest.base;
 
-import dev.barrikeit.model.domain.base.GenericEntity;
+import dev.barrikeit.springframework.data.entity.GenericEntity;
 import dev.barrikeit.service.base.GenericCrudService;
-import dev.barrikeit.service.dto.base.BaseDto;
+import dev.barrikeit.data.dto.BaseDto;
 import jakarta.validation.Valid;
 import java.io.Serializable;
 import lombok.extern.log4j.Log4j2;

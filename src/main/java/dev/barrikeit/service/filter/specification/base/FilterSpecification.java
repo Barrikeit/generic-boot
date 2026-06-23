@@ -93,13 +93,13 @@ public class FilterSpecification<E> implements Specification<E> {
     if (javaType == OffsetDateTime.class) {
       OffsetDateTime value =
           searchCriteria.getValue() instanceof String s
-              ? TimeUtil.convertOffsetDateTime(s)
+              ? TimeUtil.parseOffsetDateTime(s)
               : (OffsetDateTime) searchCriteria.getValue();
       return criteriaBuilder.greaterThanOrEqualTo(root.get(this.searchCriteria.getKey()), value);
     } else if (javaType == LocalDate.class) {
       LocalDate localDate =
           searchCriteria.getValue() instanceof String s
-              ? TimeUtil.convertOffsetDateTime(s).toLocalDate()
+              ? TimeUtil.parseOffsetDateTime(s).toLocalDate()
               : (LocalDate) searchCriteria.getValue();
       return criteriaBuilder.greaterThanOrEqualTo(
           root.get(this.searchCriteria.getKey()), localDate);
@@ -114,13 +114,13 @@ public class FilterSpecification<E> implements Specification<E> {
     if (javaType == OffsetDateTime.class) {
       OffsetDateTime value =
           searchCriteria.getValue() instanceof String s
-              ? TimeUtil.convertOffsetDateTime(s)
+              ? TimeUtil.parseOffsetDateTime(s)
               : (OffsetDateTime) searchCriteria.getValue();
       return criteriaBuilder.lessThanOrEqualTo(root.get(this.searchCriteria.getKey()), value);
     } else if (javaType == LocalDate.class) {
       LocalDate localDate =
           searchCriteria.getValue() instanceof String s
-              ? TimeUtil.convertOffsetDateTime(s).toLocalDate()
+              ? TimeUtil.parseOffsetDateTime(s).toLocalDate()
               : (LocalDate) searchCriteria.getValue();
       return criteriaBuilder.lessThanOrEqualTo(root.get(this.searchCriteria.getKey()), localDate);
     } else {

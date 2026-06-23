@@ -1,8 +1,8 @@
 package dev.barrikeit.rest.base;
 
-import dev.barrikeit.model.domain.base.BaseEntity;
+import dev.barrikeit.springframework.data.entity.BaseEntity;
 import dev.barrikeit.service.base.CrudBaseService;
-import dev.barrikeit.service.dto.base.BaseDto;
+import dev.barrikeit.data.dto.BaseDto;
 import java.io.Serializable;
 import lombok.extern.log4j.Log4j2;
 

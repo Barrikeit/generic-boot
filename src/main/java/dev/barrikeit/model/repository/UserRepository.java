@@ -1,8 +1,8 @@
 package dev.barrikeit.model.repository;
 
 import dev.barrikeit.model.domain.User;
-import dev.barrikeit.model.repository.base.FilterBaseRepository;
-import dev.barrikeit.model.repository.base.GenericRepository;
+import dev.barrikeit.springframework.data.repository.FilterBaseRepository;
+import dev.barrikeit.springframework.data.repository.GenericRepository;
 import java.util.Optional;
 import java.util.UUID;
 

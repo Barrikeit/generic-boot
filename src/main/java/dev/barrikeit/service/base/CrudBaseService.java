@@ -2,11 +2,11 @@ package dev.barrikeit.service.base;
 
 import java.io.Serializable;
 import lombok.extern.log4j.Log4j2;
-import dev.barrikeit.model.domain.base.BaseEntity;
-import dev.barrikeit.model.repository.base.BaseRepository;
-import dev.barrikeit.model.repository.base.CrudBaseRepository;
-import dev.barrikeit.service.dto.base.BaseDto;
-import dev.barrikeit.service.mapper.base.BaseMapper;
+import dev.barrikeit.springframework.data.entity.BaseEntity;
+import dev.barrikeit.springframework.data.repository.BaseRepository;
+import dev.barrikeit.springframework.data.repository.CrudBaseRepository;
+import dev.barrikeit.data.dto.BaseDto;
+import dev.barrikeit.data.mapper.BaseMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 /**

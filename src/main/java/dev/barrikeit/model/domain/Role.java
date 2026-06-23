@@ -1,6 +1,6 @@
 package dev.barrikeit.model.domain;
 
-import dev.barrikeit.model.domain.base.GenericCodeEntity;
+import dev.barrikeit.springframework.data.entity.GenericCodeEntity;
 import dev.barrikeit.util.constants.EntityConstants;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

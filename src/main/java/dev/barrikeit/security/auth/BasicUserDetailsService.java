@@ -1,11 +1,14 @@
-package dev.barrikeit.security.service;
+package dev.barrikeit.security.auth;
 
+import dev.barrikeit.exception.BadRequestException;
+import dev.barrikeit.exception.NotFoundException;
+import dev.barrikeit.exception.UnauthorizedException;
 import dev.barrikeit.model.domain.Module;
 import dev.barrikeit.model.domain.Role;
 import dev.barrikeit.model.domain.User;
 import dev.barrikeit.model.repository.RoleRepository;
 import dev.barrikeit.model.repository.UserRepository;
-import dev.barrikeit.security.model.domain.BasicUserDetails;
+import dev.barrikeit.security.data.entity.BasicUserDetails;
 import dev.barrikeit.service.dto.UserDto;
 import dev.barrikeit.service.mapper.UserMapper;
 import dev.barrikeit.util.EmailUtil;
@@ -13,34 +16,90 @@ import dev.barrikeit.util.RandomUtil;
 import dev.barrikeit.util.TimeUtil;
 import dev.barrikeit.util.constants.ExceptionConstants;
 import dev.barrikeit.util.enums.EmailType;
-import dev.barrikeit.util.exceptions.BadRequestException;
-import dev.barrikeit.util.exceptions.NotFoundException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Application {@link dev.barrikeit.security.service.BasicUserDetailsService} — loads users from the application database and maps
+ * them to security {@link BasicUserDetails}.
+ *
+ * <p>Implements the core contract ({@code loadDetails}/{@code loadDetailsByCode}) and overrides
+ * {@code authenticate} to add brute-force lockout. Also carries the application-specific account
+ * lifecycle (registration with email + verification token, email verification, ban/unban).
+ */
 @Log4j2
 @Service
-@AllArgsConstructor
-public class BasicUserDetailsService {
+public class BasicUserDetailsService extends dev.barrikeit.security.service.BasicUserDetailsService {
 
   private final UserRepository repository;
   private final UserMapper mapper;
-
   private final RoleRepository roleRepository;
-  private final PasswordEncoder passwordEncoder =
-      PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
+  public BasicUserDetailsService(
+      UserRepository repository, UserMapper mapper, RoleRepository roleRepository) {
+    super(PasswordEncoderFactories.createDelegatingPasswordEncoder());
+    this.repository = repository;
+    this.mapper = mapper;
+    this.roleRepository = roleRepository;
+  }
+
+  // -------------------------------------------------------------------------
+  // Core contract
+  // -------------------------------------------------------------------------
+
+  @Override
+  protected BasicUserDetails loadDetails(String username) {
+    return toDetails(findByUsername(username));
+  }
+
+  @Override
+  protected BasicUserDetails loadDetailsByCode(UUID userId) {
+    return toDetails(
+        repository
+            .findById(userId)
+            .orElseThrow(() -> new NotFoundException(ExceptionConstants.ERROR_NOT_FOUND, userId)));
+  }
+
+  /** Adds brute-force lockout on top of the standard credential check. */
+  @Override
+  public BasicUserDetails authenticate(String username, String rawPassword) {
+    User user;
+    try {
+      user = findByUsername(username);
+    } catch (NotFoundException e) {
+      throw new UnauthorizedException("exception.auth.bad-credentials");
+    }
+    if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+      checkAttempts(user);
+      throw new UnauthorizedException("exception.auth.bad-credentials");
+    }
+    if (!user.getSecurity().isEnabled()) {
+      throw new UnauthorizedException("exception.auth.account-disabled");
+    }
+    if (user.getSecurity().isBanned()) {
+      throw new UnauthorizedException("exception.auth.account-locked");
+    }
+    updateLoginDateAndResetAttempts(user);
+    return toDetails(user);
+  }
+
+  private BasicUserDetails toDetails(User user) {
+    return new BasicUserDetails(
+        user.getId(),
+        user.getUsername(),
+        user.getPassword(),
+        user.getSecurity().isEnabled(),
+        user.getSecurity().isBanned(),
+        getRoles(user),
+        getAuthorities(user));
+  }
 
   public User findByUsername(final String username) throws NotFoundException {
     return repository
@@ -52,58 +111,9 @@ public class BasicUserDetailsService {
             });
   }
 
-  public BasicUserDetails loadUser(final String username) throws NotFoundException {
-    User user = findByUsername(username);
-    return new BasicUserDetails(
-        user.getId(),
-        user.getUsername(),
-        user.getPassword(),
-        user.getSecurity().isEnabled(),
-        user.getSecurity().isBanned(),
-        getRoles(user),
-        getAuthorities(user));
-  }
-
-  public BasicUserDetails loadUserByCode(UUID userId) {
-    User user =
-        repository
-            .findById(userId)
-            .orElseThrow(() -> new NotFoundException(ExceptionConstants.ERROR_NOT_FOUND, userId));
-    return new BasicUserDetails(
-        user.getId(),
-        user.getUsername(),
-        user.getPassword(),
-        user.getSecurity().isEnabled(),
-        user.getSecurity().isBanned(),
-        getRoles(user),
-        getAuthorities(user));
-  }
-
-  public UsernamePasswordAuthenticationToken authenticate(final UserDto dto)
-      throws AuthenticationException {
-    try {
-      String username = dto.getUsername();
-      String password = dto.getPassword();
-      User user = findByUsername(username);
-      if (!this.passwordEncoder.matches(password, user.getPassword())) {
-        checkAttempts(user);
-        throw new NotFoundException(ExceptionConstants.ERROR_NOT_FOUND, username);
-      }
-      return new UsernamePasswordAuthenticationToken(
-          new BasicUserDetails(
-              user.getId(),
-              user.getUsername(),
-              user.getPassword(),
-              user.getSecurity().isEnabled(),
-              user.getSecurity().isBanned(),
-              getRoles(user),
-              getAuthorities(user)),
-          dto.getPassword(),
-          new ArrayList<>());
-    } catch (NotFoundException e) {
-      throw new BadCredentialsException("Bad Credentials");
-    }
-  }
+  // -------------------------------------------------------------------------
+  // Application-specific account lifecycle
+  // -------------------------------------------------------------------------
 
   public String register(final UserDto dto) {
     User user = validateUserToCreateUpdate(dto, true);
@@ -112,7 +122,7 @@ public class BasicUserDetailsService {
     user.setPassword(passwordEncoder.encode(dto.getPassword()));
     mapper.updateEntity(dto, user);
     user.getSecurity().setRegistrationDate(TimeUtil.offsetDateTimeNow());
-    user.getSecurity().setVerificationToken(RandomUtil.getRandomBase64EncodedString(14));
+    user.getSecurity().setVerificationToken(RandomUtil.randomBase64(14));
 
     user = repository.save(user);
     UserDto registeredUserDto = mapper.toDto(user);

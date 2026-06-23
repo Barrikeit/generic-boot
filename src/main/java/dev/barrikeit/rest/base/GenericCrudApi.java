@@ -1,6 +1,6 @@
 package dev.barrikeit.rest.base;
 
-import dev.barrikeit.service.dto.base.BaseDto;
+import dev.barrikeit.data.dto.BaseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -1,8 +1,8 @@
 package dev.barrikeit.rest.base;
 
-import dev.barrikeit.model.domain.base.GenericCodeEntity;
+import dev.barrikeit.springframework.data.entity.GenericCodeEntity;
 import dev.barrikeit.service.base.GenericCodeCrudService;
-import dev.barrikeit.service.dto.base.BaseDto;
+import dev.barrikeit.data.dto.BaseDto;
 import java.io.Serializable;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.DeleteMapping;

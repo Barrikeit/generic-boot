@@ -1,8 +1,8 @@
 package dev.barrikeit.service.dto;
 
-import dev.barrikeit.service.dto.base.BaseDto;
-import dev.barrikeit.util.validation.Alphanumeric;
-import dev.barrikeit.util.validation.Password;
+import dev.barrikeit.data.dto.BaseDto;
+import dev.barrikeit.validation.Alphanumeric;
+import dev.barrikeit.validation.Password;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

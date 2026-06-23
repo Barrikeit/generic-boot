@@ -1,5 +1,7 @@
 package dev.barrikeit.util.exceptions;
 
+import dev.barrikeit.exception.BaseException;
+
 public class NoSuchMethodException extends BaseException {
 
   public NoSuchMethodException(String message) {

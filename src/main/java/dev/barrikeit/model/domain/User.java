@@ -1,6 +1,6 @@
 package dev.barrikeit.model.domain;
 
-import dev.barrikeit.model.domain.base.GenericEntity;
+import dev.barrikeit.springframework.data.entity.GenericEntity;
 import dev.barrikeit.util.constants.EntityConstants;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

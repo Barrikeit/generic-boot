@@ -1,8 +1,8 @@
 package dev.barrikeit.service.dto;
 
-import dev.barrikeit.service.dto.base.BaseDto;
-import dev.barrikeit.util.validation.Alphanumeric;
-import dev.barrikeit.util.validation.Sanitize;
+import dev.barrikeit.data.dto.BaseDto;
+import dev.barrikeit.validation.Alphanumeric;
+import dev.barrikeit.validation.Sanitize;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;

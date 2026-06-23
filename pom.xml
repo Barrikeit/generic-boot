@@ -20,6 +20,7 @@
         <banner.version>${app.version}</banner.version>
         <banner.build>${app.build}</banner.build>
 
+        <core.version>1.0.0</core.version>
         <spring-boot.version>3.5.3</spring-boot.version>
         <spring-doc.version>2.8.6</spring-doc.version>
         <jwt.version>0.13.0</jwt.version>
@@ -49,10 +50,28 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>dev.barrikeit</groupId>
+                <artifactId>core</artifactId>
+                <version>${core.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>dev.barrikeit</groupId>
+            <artifactId>security</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.barrikeit</groupId>
+            <artifactId>validation</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

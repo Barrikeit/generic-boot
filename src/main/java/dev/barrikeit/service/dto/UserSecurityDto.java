@@ -1,7 +1,7 @@
 package dev.barrikeit.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import dev.barrikeit.service.dto.base.BaseDto;
+import dev.barrikeit.data.dto.BaseDto;
 import dev.barrikeit.util.constants.UtilConstants;
 import jakarta.validation.constraints.NotNull;
 import java.time.OffsetDateTime;

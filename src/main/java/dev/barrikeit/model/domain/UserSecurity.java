@@ -1,6 +1,6 @@
 package dev.barrikeit.model.domain;
 
-import dev.barrikeit.model.domain.base.GenericMappedEntity;
+import dev.barrikeit.springframework.data.entity.GenericMappedEntity;
 import dev.barrikeit.util.constants.EntityConstants;
 import jakarta.persistence.AssociationOverride;
 import jakarta.persistence.AttributeOverride;

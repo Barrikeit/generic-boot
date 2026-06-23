@@ -2,7 +2,7 @@ package dev.barrikeit.service.mapper;
 
 import dev.barrikeit.model.domain.Role;
 import dev.barrikeit.service.dto.RoleDto;
-import dev.barrikeit.service.mapper.base.BaseMapper;
+import dev.barrikeit.data.mapper.BaseMapper;
 import org.mapstruct.*;
 
 @Mapper(

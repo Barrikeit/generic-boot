@@ -20,7 +20,7 @@ public class ServerStatusTask {
 
   @Scheduled(initialDelay = 15, fixedDelay = 15, timeUnit = TimeUnit.MINUTES)
   public void task() {
-    String currentTime = TimeUtil.formatOffsetDateTime(TimeUtil.offsetDateTimeNow());
+    String currentTime = TimeUtil.formatDateTime(TimeUtil.offsetDateTimeNow());
     log.info("Server Status - [UP]: [{}]", currentTime);
   }
 

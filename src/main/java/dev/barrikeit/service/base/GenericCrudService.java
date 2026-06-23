@@ -2,10 +2,10 @@ package dev.barrikeit.service.base;
 
 import java.io.Serializable;
 import lombok.extern.log4j.Log4j2;
-import dev.barrikeit.model.domain.base.GenericEntity;
-import dev.barrikeit.model.repository.base.GenericRepository;
-import dev.barrikeit.service.dto.base.BaseDto;
-import dev.barrikeit.service.mapper.base.BaseMapper;
+import dev.barrikeit.springframework.data.entity.GenericEntity;
+import dev.barrikeit.springframework.data.repository.GenericRepository;
+import dev.barrikeit.data.dto.BaseDto;
+import dev.barrikeit.data.mapper.BaseMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 /**

@@ -1,8 +1,8 @@
 package dev.barrikeit.security.config;
 
 import dev.barrikeit.config.ApplicationProperties;
-import dev.barrikeit.security.config.filter.AppHeaderValidatorFilter;
-import dev.barrikeit.security.config.filter.JwtFilter;
+import dev.barrikeit.security.filter.AppHeaderValidatorFilter;
+import dev.barrikeit.security.filter.JwtFilter;
 import dev.barrikeit.security.service.UserSessionService;
 import dev.barrikeit.security.util.JwtUtil;
 import java.util.Arrays;
@@ -147,7 +147,7 @@ public class SecurityConfiguration {
   @Bean
   public AppHeaderValidatorFilter appHeaderValidatorFilter() {
     return new AppHeaderValidatorFilter(
-        serverProperties.getServlet(), securityProperties.getAppValidatorFilter());
+        serverProperties.getServlet().getApiPath(), securityProperties.getAppValidatorFilter());
   }
 
   private static List<String> splitTrimmed(String csv) {

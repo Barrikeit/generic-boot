@@ -8,7 +8,7 @@ import dev.barrikeit.service.filter.specification.RoleFilterSpecification;
 import dev.barrikeit.service.filter.specification.base.SearchCriteria;
 import dev.barrikeit.util.constants.EntityConstants;
 import dev.barrikeit.util.constants.ExceptionConstants;
-import dev.barrikeit.util.exceptions.BadRequestException;
+import dev.barrikeit.exception.BadRequestException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.util.ObjectUtils;

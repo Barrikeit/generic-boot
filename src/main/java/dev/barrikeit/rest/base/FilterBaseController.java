@@ -1,8 +1,8 @@
 package dev.barrikeit.rest.base;
 
-import dev.barrikeit.model.domain.base.BaseEntity;
+import dev.barrikeit.springframework.data.entity.BaseEntity;
 import dev.barrikeit.service.base.FilterBaseService;
-import dev.barrikeit.service.dto.base.BaseDto;
+import dev.barrikeit.data.dto.BaseDto;
 import dev.barrikeit.service.filter.base.BaseFilter;
 import dev.barrikeit.util.validation.SearchParams;
 import jakarta.validation.Valid;

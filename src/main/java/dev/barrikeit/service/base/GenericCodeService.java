@@ -3,13 +3,13 @@ package dev.barrikeit.service.base;
 import java.io.Serializable;
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
-import dev.barrikeit.model.domain.base.GenericCodeEntity;
-import dev.barrikeit.model.repository.base.GenericCodeRepository;
-import dev.barrikeit.service.dto.base.BaseDto;
-import dev.barrikeit.service.mapper.base.BaseMapper;
+import dev.barrikeit.springframework.data.entity.GenericCodeEntity;
+import dev.barrikeit.springframework.data.repository.GenericCodeRepository;
+import dev.barrikeit.data.dto.BaseDto;
+import dev.barrikeit.data.mapper.BaseMapper;
 import dev.barrikeit.util.constants.EntityConstants;
 import dev.barrikeit.util.constants.ExceptionConstants;
-import dev.barrikeit.util.exceptions.NotFoundException;
+import dev.barrikeit.exception.NotFoundException;
 import org.springframework.data.domain.Sort;
 
 /**

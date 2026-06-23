@@ -11,14 +11,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.Getter;
 import lombok.Setter;
-import dev.barrikeit.service.dto.base.BaseDto;
+import dev.barrikeit.data.dto.BaseDto;
 import dev.barrikeit.service.filter.specification.base.SearchCriteria;
 import dev.barrikeit.service.filter.specification.base.SearchOperation;
 import dev.barrikeit.util.ObjectUtil;
 import dev.barrikeit.util.ReflectionUtil;
 import dev.barrikeit.util.constants.ExceptionConstants;
 import dev.barrikeit.util.constants.UtilConstants;
-import dev.barrikeit.util.exceptions.BadRequestException;
+import dev.barrikeit.exception.BadRequestException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -54,7 +54,7 @@ public abstract class BaseFilterBuilder<D extends BaseDto, F extends BaseFilter>
       String operator = matcher.group(2);
       String value = matcher.group(3);
       if (key.trim().equalsIgnoreCase(UtilConstants.UNPAGED_PARAMETRO_BUSQUEDA)) {
-        this.unpaged = ObjectUtil.parseBooleanValue(value);
+        this.unpaged = ObjectUtil.parseBoolean(value);
         continue;
       }
       with(key, operator, value);
