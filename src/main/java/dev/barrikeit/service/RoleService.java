@@ -1,6 +1,6 @@
 package dev.barrikeit.service;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import dev.barrikeit.model.domain.Role;
 import dev.barrikeit.model.repository.RoleRepository;
 import dev.barrikeit.service.base.GenericCodeService;
@@ -8,7 +8,7 @@ import dev.barrikeit.service.dto.RoleDto;
 import dev.barrikeit.service.mapper.RoleMapper;
 import org.springframework.stereotype.Service;
 
-@Log4j2
+@Slf4j
 @Service
 public class RoleService extends GenericCodeService<Role, Long, String, RoleDto> {
   private final RoleRepository repository;

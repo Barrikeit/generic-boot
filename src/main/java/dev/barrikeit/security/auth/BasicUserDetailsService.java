@@ -20,7 +20,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -34,7 +34,7 @@ import org.springframework.stereotype.Service;
  * {@code authenticate} to add brute-force lockout. Also carries the application-specific account
  * lifecycle (registration with email + verification token, email verification, ban/unban).
  */
-@Log4j2
+@Slf4j
 @Service
 public class BasicUserDetailsService extends dev.barrikeit.security.service.BasicUserDetailsService {
 

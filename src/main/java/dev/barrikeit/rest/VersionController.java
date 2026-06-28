@@ -1,16 +1,16 @@
 package dev.barrikeit.rest;
 
 import dev.barrikeit.config.ApplicationProperties;
-import dev.barrikeit.rest.base.Response;
+import dev.barrikeit.rest.Response;
 import dev.barrikeit.service.dto.VersionDto;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Log4j2
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/version")

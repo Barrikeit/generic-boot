@@ -66,6 +66,12 @@
             <artifactId>security</artifactId>
             <version>${core.version}</version>
         </dependency>
+        <!-- REST layer: Response, ExceptionController + generic base controllers (brings service + filter transitively) -->
+        <dependency>
+            <groupId>dev.barrikeit</groupId>
+            <artifactId>rest</artifactId>
+            <version>${core.version}</version>
+        </dependency>
         <dependency>
             <groupId>dev.barrikeit</groupId>
             <artifactId>validation</artifactId>
@@ -112,9 +118,21 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
+        <!-- Logging: route SLF4J/Spring logging to java.util.logging, configured by the
+             core `logger` module (LoggerConfig + colored LoggerFormatter). -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
+            <groupId>dev.barrikeit</groupId>
+            <artifactId>logger</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+        </dependency>
+        <!-- Route Apache log4j2-api calls (POI/PDFBox) to SLF4J → JUL -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-to-slf4j</artifactId>
         </dependency>
 
         <dependency>
@@ -201,11 +219,24 @@
             <groupId>com.healthmarketscience.jackcess</groupId>
             <artifactId>jackcess</artifactId>
             <version>${jackcess.version}</version>
+            <exclusions>
+                <!-- Use spring-jcl for commons-logging; drop the real jar to avoid the conflict warning -->
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
             <version>${pdfbox.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

@@ -2,18 +2,18 @@ package dev.barrikeit.rest;
 
 import dev.barrikeit.model.domain.Role;
 import dev.barrikeit.rest.base.GenericCodeController;
-import dev.barrikeit.rest.base.Response;
+import dev.barrikeit.rest.Response;
 import dev.barrikeit.service.RoleService;
 import dev.barrikeit.service.dto.RoleDto;
 import java.util.List;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Log4j2
+@Slf4j
 @RestController
 @RequestMapping("/roles")
 public class RoleController extends GenericCodeController<Role, Long, String, RoleDto>

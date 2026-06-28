@@ -1,6 +1,6 @@
 package dev.barrikeit.rest;
 
-import dev.barrikeit.rest.base.Response;
+import dev.barrikeit.rest.Response;
 import dev.barrikeit.service.dto.UserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

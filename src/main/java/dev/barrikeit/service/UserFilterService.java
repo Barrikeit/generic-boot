@@ -8,11 +8,11 @@ import dev.barrikeit.service.filter.UserFilter;
 import dev.barrikeit.service.filter.UserFilterBuilder;
 import dev.barrikeit.service.mapper.UserMapper;
 import java.util.UUID;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-@Log4j2
+@Slf4j
 @Service
 public class UserFilterService extends FilterBaseService<User, UUID, UserDto, UserFilter> {
 

@@ -4,7 +4,7 @@ import dev.barrikeit.util.constants.ConfigurationConstants;
 import java.util.List;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,7 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-@Log4j2
+@Slf4j
 @Configuration
 @EnableWebMvc
 @RequiredArgsConstructor

@@ -2,12 +2,12 @@ package dev.barrikeit.util.exceptions;
 
 import java.io.Serial;
 import java.net.URI;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.ErrorResponseException;
 
-@Log4j2
+@Slf4j
 public class GenericException extends ErrorResponseException {
   @Serial private static final long serialVersionUID = 1L;
 

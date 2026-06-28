@@ -1,0 +1,18 @@
+logging:
+  level: INFO
+  console: true
+  file:
+    enabled: true
+    path: logs
+    name: generic-boot
+    max-size-mb: 200
+    max-files: 30
+  format:
+    date: "yyyy-MM-dd HH:mm:ss.SSS"
+    logger:
+      width: 40
+  levels:
+    dev.barrikeit: DEBUG
+    org.springframework: ERROR
+    org.hibernate: ERROR
+    com.zaxxer.hikari: ERROR

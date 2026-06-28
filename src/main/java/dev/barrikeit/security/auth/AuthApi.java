@@ -1,6 +1,6 @@
 package dev.barrikeit.security.auth;
 
-import dev.barrikeit.rest.base.Response;
+import dev.barrikeit.rest.Response;
 import dev.barrikeit.security.rest.dto.JwtDto;
 import dev.barrikeit.security.rest.dto.LoginDto;
 import dev.barrikeit.security.rest.dto.RegisterDto;

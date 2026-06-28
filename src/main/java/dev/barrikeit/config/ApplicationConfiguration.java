@@ -4,7 +4,7 @@ import io.micrometer.observation.ObservationRegistry;
 import jakarta.servlet.ServletContext;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.actuate.autoconfigure.observation.ObservationRegistryCustomizer;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +14,7 @@ import org.springframework.http.server.observation.ServerRequestObservationConte
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 
-@Log4j2
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfiguration implements ServletContextInitializer {

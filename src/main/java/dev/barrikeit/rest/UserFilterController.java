@@ -6,11 +6,11 @@ import dev.barrikeit.service.UserFilterService;
 import dev.barrikeit.service.dto.UserDto;
 import dev.barrikeit.service.filter.UserFilter;
 import java.util.UUID;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Log4j2
+@Slf4j
 @RestController
 @RequestMapping("/users")
 public class UserFilterController extends FilterBaseController<User, UUID, UserDto, UserFilter>
